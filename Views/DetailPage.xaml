@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:TasteHub.ViewModels"
+             x:Class="TasteHub.Views.DetailPage"
+             x:DataType="viewmodels:DetailViewModel"
+             Title="{Binding Title}"
+             SemanticProperties.Description="Recipe detail page showing full recipe information">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="15">
+
+            <!-- Cover image with pinch-to-zoom -->
+            <Frame CornerRadius="12" Padding="0" IsClippedToBounds="True" HeightRequest="220">
+                <Image Source="{Binding Recipe.ImagePath}"
+                       Aspect="AspectFill"
+                       Scale="{Binding ImageScale}">
+                    <Image.GestureRecognizers>
+                        <PinchGestureRecognizer PinchUpdated="OnPinchUpdated"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </Frame>
+
+            <!-- Name and category -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding Recipe.Name}"
+                       FontSize="{DynamicResource AppFontSizeTitle}"
+                       FontAttributes="Bold"
+                       SemanticProperties.HeadingLevel="Level1"/>
+                <HorizontalStackLayout Spacing="8">
+                    <Frame Padding="6,3" CornerRadius="8"
+                           BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1565C0}">
+                        <Label Text="{Binding Recipe.Category}"
+                               FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    </Frame>
+                    <Frame Padding="6,3" CornerRadius="8"
+                           BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#E65100}">
+                        <Label Text="{Binding Recipe.SubCategory}"
+                               FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    </Frame>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Description -->
+            <Label Text="{Binding Recipe.Description}"
+                   FontSize="{DynamicResource AppFontSize}"/>
+
+            <!-- Nutrition -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F1F8E9, Dark=#33691E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Nutrition Information"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
+                        <Label Grid.Column="0" Text="Calories" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="1" Text="Protein" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="2" Text="Carbs" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="3" Text="Fat" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="{Binding Recipe.Calories, StringFormat='{0:F0} kcal'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="1"
+                               Text="{Binding Recipe.Protein, StringFormat='{0:F1}g'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="2"
+                               Text="{Binding Recipe.Carbs, StringFormat='{0:F1}g'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="3"
+                               Text="{Binding Recipe.Fat, StringFormat='{0:F1}g'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Ingredients -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#5D4037}">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Ingredients"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <CollectionView ItemsSource="{Binding IngredientsList}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <HorizontalStackLayout Spacing="8" Padding="0,3">
+                                    <Label Text="•" FontSize="{DynamicResource AppFontSize}"/>
+                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"/>
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Steps with TTS -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#283593}">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Steps"
+                               FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSize}"
+                               SemanticProperties.HeadingLevel="Level2"/>
+                        <Button Grid.Column="1"
+                                Text="{Binding IsReading, Converter={StaticResource BoolToTTSTextConverter}}"
+                                Command="{Binding ReadStepsAloudCommand}"
+                                SemanticProperties.Hint="Read cooking steps aloud"/>
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding StepsList}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Frame Padding="10" Margin="0,3" CornerRadius="8"
+                                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#3C3C3C}">
+                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"/>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action buttons -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="Edit"
+                        Command="{Binding EditRecipeCommand}"
+                        BackgroundColor="#FF9800" TextColor="White"/>
+                <Button Grid.Column="1" Text="Delete"
+                        Command="{Binding DeleteRecipeCommand}"
+                        BackgroundColor="#F44336" TextColor="White"/>
+                <Button Grid.Column="2" Text="Cook!"
+                        Clicked="OnCookClicked"
+                        BackgroundColor="#4CAF50" TextColor="White"/>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

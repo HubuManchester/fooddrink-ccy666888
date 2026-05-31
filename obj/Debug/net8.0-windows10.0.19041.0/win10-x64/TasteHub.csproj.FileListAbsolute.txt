@@ -1,0 +1,12 @@
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\TasteHub.csproj.AssemblyReference.cache
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\mauiimage.inputs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\mauifont.inputs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\mauisplash.inputs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\mauimanifest.stamp
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\Platforms\Windows\App.g.i.cs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\Platforms\Windows\App.g.cs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\XamlTypeInfo.g.cs
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\Platforms\Windows\App.xaml
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\Platforms\Windows\App.xbf
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\XamlSaveStateFile.xml
+D:\Projects\TasteHub\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\TasteHub.GeneratedMSBuildEditorConfig.editorconfig

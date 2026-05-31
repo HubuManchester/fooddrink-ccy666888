@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:TasteHub.ViewModels"
+             x:Class="TasteHub.Views.SettingsPage"
+             x:DataType="viewmodels:SettingsViewModel"
+             Title="{Binding Title}"
+             SemanticProperties.Description="Settings page for theme font size and accessibility">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="15">
+
+            <!-- Theme -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Theme" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Dark Mode"
+                               FontSize="{DynamicResource AppFontSize}" VerticalOptions="Center"/>
+                        <Switch Grid.Column="1" IsToggled="{Binding IsDarkMode}"
+                                SemanticProperties.Hint="Toggle dark and light theme"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Font Size -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Font Size" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Label Text="{Binding SelectedFontSize, StringFormat='Current: {0}'}"
+                           FontSize="{DynamicResource AppFontSize}" Opacity="0.7"/>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Button Grid.Column="0" Grid.Row="0" Text="Small"
+                                Command="{Binding SetFontSmallCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#424242}"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Button Grid.Column="1" Grid.Row="0" Text="Medium"
+                                Command="{Binding SetFontMediumCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#424242}"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Button Grid.Column="0" Grid.Row="1" Text="Large"
+                                Command="{Binding SetFontLargeCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#424242}"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        <Button Grid.Column="1" Grid.Row="1" Text="Extra Large"
+                                Command="{Binding SetFontExtraLargeCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#424242}"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+                    <Frame Padding="10" CornerRadius="8"
+                           BackgroundColor="{AppThemeBinding Light=White, Dark=#3C3C3C}">
+                        <Label Text="This is a preview of the selected font size."
+                               FontSize="{Binding FontSizeValue}"/>
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- WCAG Accessibility -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1565C0}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Accessibility" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Label Text="TasteHub follows WCAG 2.1 guidelines for an inclusive experience."
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#BBDEFB, Dark=#0D47A1}"/>
+                    <Label Text="WCAG Principles Applied:" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Label Text="1.1.1 Non-text Content - All images have semantic descriptions."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="1.3.1 Info and Relationships - Semantic headings and labels used."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="1.4.3 Contrast - Text meets 4.5:1 contrast ratio."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="1.4.4 Resize Text - Font size adjustable from Small to Extra Large."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="2.1.1 Keyboard Accessible - All elements support keyboard navigation."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="2.4.2 Page Titled - Each page has a clear title."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="3.3.1 Error Identification - Errors clearly identify the problem field."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="3.3.2 Labels or Instructions - Every input has a visible label."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="4.1.2 Name Role Value - Semantic properties set on all elements."
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Help -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Help" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Browse recipes on the Home tab using Food/Drink filters."/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Tap a recipe card to view full details."/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Swipe left on a recipe to edit or delete it."/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Tap the speaker icon to hear steps read aloud."/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Tap Cook to enter interactive mode using sensors."/>
+                    <Label FontSize="{DynamicResource AppFontSize}"
+                           Text="Shake your phone on the Home page to earn a coupon."/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- About -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="About TasteHub" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           SemanticProperties.HeadingLevel="Level2"/>
+                    <Label Text="A cross-platform food and drink recipe app built with .NET MAUI."
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Label Text="Version 1.0.0" FontSize="{DynamicResource AppFontSizeSmall}" Opacity="0.7"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

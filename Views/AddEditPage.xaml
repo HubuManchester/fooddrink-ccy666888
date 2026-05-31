@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:TasteHub.ViewModels"
+             x:Class="TasteHub.Views.AddEditPage"
+             x:DataType="viewmodels:AddEditViewModel"
+             Title="{Binding Title}"
+             SemanticProperties.Description="Page for adding or editing a recipe">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="12">
+
+            <!-- Recipe Name -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Recipe Name *"
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"/>
+                <Entry Placeholder="Enter recipe name"
+                       Text="{Binding RecipeName}"
+                       MaxLength="100"
+                       AutomationProperties.Name="Recipe name input"/>
+                <Label Text="{Binding NameError}"
+                       TextColor="Red"
+                       FontSize="{DynamicResource AppFontSizeSmall}"
+                       IsVisible="{Binding NameError, Converter={StaticResource IsNotEmptyConverter}}"/>
+            </VerticalStackLayout>
+
+            <!-- Category -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Category *"
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"/>
+                <Picker Title="Select category"
+                        ItemsSource="{Binding Categories}"
+                        SelectedItem="{Binding SelectedCategory}"
+                        AutomationProperties.Name="Category picker"/>
+                <Label Text="{Binding CategoryError}"
+                       TextColor="Red"
+                       FontSize="{DynamicResource AppFontSizeSmall}"
+                       IsVisible="{Binding CategoryError, Converter={StaticResource IsNotEmptyConverter}}"/>
+            </VerticalStackLayout>
+
+            <!-- Sub-Category -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Sub-Category"
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"/>
+                <Picker Title="Select sub-category"
+                        ItemsSource="{Binding SubCategories}"
+                        SelectedItem="{Binding SelectedSubCategory}"
+                        AutomationProperties.Name="Sub-category picker"/>
+            </VerticalStackLayout>
+
+            <!-- Description -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Description"
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"/>
+                <Editor Placeholder="Describe your recipe..."
+                        Text="{Binding Description}"
+                        HeightRequest="80"
+                        MaxLength="500"
+                        AutomationProperties.Name="Description input"/>
+            </VerticalStackLayout>
+
+            <!-- Cover Image -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Cover Image"
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"/>
+                <Frame CornerRadius="10" Padding="0" IsClippedToBounds="True"
+                       HeightRequest="160"
+                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#3C3C3C}">
+                    <Image Source="{Binding ImagePath}"
+                           Aspect="AspectFill"/>
+                </Frame>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="Take Photo"
+                            Command="{Binding TakePhotoCommand}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"/>
+                    <Button Grid.Column="1" Text="Pick from Gallery"
+                            Command="{Binding PickPhotoCommand}"
+                            BackgroundColor="#607D8B"
+                            TextColor="White"/>
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Nutrition -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#F1F8E9, Dark=#33691E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Nutrition Information"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                          ColumnSpacing="10" RowSpacing="8">
+                        <VerticalStackLayout Grid.Column="0" Grid.Row="0">
+                            <Label Text="Calories (kcal)" FontSize="{DynamicResource AppFontSizeSmall}"/>
+                            <Entry Placeholder="0" Text="{Binding CaloriesText}" Keyboard="Numeric"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Grid.Row="0">
+                            <Label Text="Protein (g)" FontSize="{DynamicResource AppFontSizeSmall}"/>
+                            <Entry Placeholder="0" Text="{Binding ProteinText}" Keyboard="Numeric"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="0" Grid.Row="1">
+                            <Label Text="Carbs (g)" FontSize="{DynamicResource AppFontSizeSmall}"/>
+                            <Entry Placeholder="0" Text="{Binding CarbsText}" Keyboard="Numeric"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Grid.Row="1">
+                            <Label Text="Fat (g)" FontSize="{DynamicResource AppFontSizeSmall}"/>
+                            <Entry Placeholder="0" Text="{Binding FatText}" Keyboard="Numeric"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Label Text="{Binding NutritionError}"
+                           TextColor="Red"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           IsVisible="{Binding NutritionError, Converter={StaticResource IsNotEmptyConverter}}"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Ingredients -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#5D4037}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Ingredients *"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Entry Grid.Column="0"
+                               Placeholder="Add an ingredient"
+                               Text="{Binding NewIngredient}"/>
+                        <Button Grid.Column="1" Text="+"
+                                Command="{Binding AddIngredientCommand}"
+                                WidthRequest="45"
+                                BackgroundColor="#4CAF50"
+                                TextColor="White"/>
+                    </Grid>
+                    <Label Text="{Binding IngredientsError}"
+                           TextColor="Red"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           IsVisible="{Binding IngredientsError, Converter={StaticResource IsNotEmptyConverter}}"/>
+                    <CollectionView ItemsSource="{Binding Ingredients}"
+                                    HeightRequest="150">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid ColumnDefinitions="*,Auto" Padding="5,3">
+                                    <Label Grid.Column="0" Text="{Binding .}"
+                                           FontSize="{DynamicResource AppFontSize}"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="1" Text="X"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AddEditViewModel}}, Path=RemoveIngredientCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#F44336"
+                                            TextColor="White"
+                                            WidthRequest="35" HeightRequest="35"
+                                            FontSize="12"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Steps -->
+            <Frame CornerRadius="12" Padding="15"
+                   BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#283593}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Steps *"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Entry Grid.Column="0"
+                               Placeholder="Add a step"
+                               Text="{Binding NewStep}"/>
+                        <Button Grid.Column="1" Text="+"
+                                Command="{Binding AddStepCommand}"
+                                WidthRequest="45"
+                                BackgroundColor="#4CAF50"
+                                TextColor="White"/>
+                    </Grid>
+                    <Label Text="{Binding StepsError}"
+                           TextColor="Red"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           IsVisible="{Binding StepsError, Converter={StaticResource IsNotEmptyConverter}}"/>
+                    <CollectionView ItemsSource="{Binding Steps}"
+                                    HeightRequest="150">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid ColumnDefinitions="*,Auto" Padding="5,3">
+                                    <Label Grid.Column="0" Text="{Binding .}"
+                                           FontSize="{DynamicResource AppFontSize}"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="1" Text="X"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AddEditViewModel}}, Path=RemoveStepCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#F44336"
+                                            TextColor="White"
+                                            WidthRequest="35" HeightRequest="35"
+                                            FontSize="12"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Save Button -->
+            <Button Text="{Binding IsEditMode, Converter={StaticResource BoolToSaveTextConverter}}"
+                    Command="{Binding SaveRecipeCommand}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Margin="0,10"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

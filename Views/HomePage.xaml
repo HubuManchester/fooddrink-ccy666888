@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:TasteHub.ViewModels"
+             xmlns:models="clr-namespace:TasteHub.Models"
+             x:Class="TasteHub.Views.HomePage"
+             x:DataType="viewmodels:HomeViewModel"
+             Title="{Binding Title}"
+             SemanticProperties.Description="Home page displaying recipe list with search and filtering">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="15" RowSpacing="10">
+
+        <!-- Row 0: Search bar -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Search recipes..."
+                   Text="{Binding SearchText}"
+                   SemanticProperties.Hint="Type to search recipes by name or description"/>
+
+        <!-- Row 1: Category filter buttons -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center">
+            <Button Text="All"
+                    Clicked="OnAllCategoryClicked"
+                    SemanticProperties.Hint="Show all recipes"/>
+            <Button Text="Food"
+                    Clicked="OnFoodCategoryClicked"
+                    SemanticProperties.Hint="Show food recipes only"/>
+            <Button Text="Drink"
+                    Clicked="OnDrinkCategoryClicked"
+                    SemanticProperties.Hint="Show drink recipes only"/>
+        </HorizontalStackLayout>
+
+        <!-- Row 2: Barometer recommendation card -->
+        <Frame Grid.Row="2" Padding="12" CornerRadius="12"
+               BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+               IsVisible="{Binding RecommendedRecipe, Converter={StaticResource IsNotNullConverter}}"
+               SemanticProperties.Description="Today recommended recipe based on weather">
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Today's Recommendation"
+                           FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Label Text="{Binding RecommendedRecipe.Name}"
+                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                    <Label Text="{Binding CurrentPressure, StringFormat='Pressure: {0:F0} hPa'}"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           Opacity="0.7"/>
+                </VerticalStackLayout>
+                <Button Grid.Column="1" Text="View"
+                        Command="{Binding GoToDetailCommand}"
+                        CommandParameter="{Binding RecommendedRecipe}"
+                        VerticalOptions="Center"/>
+            </Grid>
+        </Frame>
+
+        <!-- Row 3: Recipe list with pull-to-refresh and swipe -->
+        <RefreshView Grid.Row="3"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadRecipesCommand}">
+            <CollectionView ItemsSource="{Binding Recipes}"
+                            SelectionMode="None"
+                            EmptyView="No recipes found. Tap + to add one!">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Recipe">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Edit"
+                                               BackgroundColor="#FF9800"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=GoToDetailCommand}"
+                                               CommandParameter="{Binding .}"/>
+                                    <SwipeItem Text="Delete"
+                                               BackgroundColor="#F44336"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=DeleteRecipeCommand}"
+                                               CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Frame Margin="0,5" Padding="10" CornerRadius="10"
+                                   BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=GoToDetailCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
+                                    <Frame Grid.Column="0" CornerRadius="8"
+                                           Padding="0" IsClippedToBounds="True"
+                                           WidthRequest="80" HeightRequest="80">
+                                        <Image Source="{Binding ImagePath}"
+                                               Aspect="AspectFill"
+                                               WidthRequest="80" HeightRequest="80"/>
+                                    </Frame>
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center" Spacing="4">
+                                        <Label Text="{Binding Name}"
+                                               FontAttributes="Bold"
+                                               FontSize="{DynamicResource AppFontSize}"
+                                               LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding SubCategory}"
+                                               FontSize="{DynamicResource AppFontSizeSmall}"
+                                               Opacity="0.7"/>
+                                        <Label Text="{Binding Calories, StringFormat='{0:F0} kcal'}"
+                                               FontSize="{DynamicResource AppFontSizeSmall}"
+                                               TextColor="#4CAF50"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Row 4: Add button -->
+        <Button Grid.Row="4" Text="+ Add Recipe"
+                Command="{Binding GoToAddRecipeCommand}"
+                BackgroundColor="#4CAF50"
+                TextColor="White"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                SemanticProperties.Hint="Add a new recipe"/>
+
+    </Grid>
+
+</ContentPage>

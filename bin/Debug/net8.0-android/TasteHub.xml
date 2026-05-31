@@ -1,0 +1,1348 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TasteHub</name>
+    </assembly>
+    <members>
+        <member name="T:TasteHub.AppShell">
+            <summary>
+            App shell defining the navigation structure with tab bar
+            and registered routes for detail pages
+            </summary>
+        </member>
+        <member name="T:TasteHub.MauiProgram">
+            <summary>
+            Main entry point for the MAUI application,
+            configuring services, view models and pages via dependency injection
+            </summary>
+        </member>
+        <member name="T:TasteHub.Models.Coupon">
+            <summary>
+            Coupon model for the shake-to-earn coupon feature
+            </summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.Id">
+            <summary>Primary key, auto-increment ID</summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.Code">
+            <summary>Coupon code</summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.Description">
+            <summary>Coupon description</summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.Discount">
+            <summary>Discount percentage (e.g. 10 means 10% off)</summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.IsUsed">
+            <summary>Whether the coupon has been used</summary>
+        </member>
+        <member name="P:TasteHub.Models.Coupon.ObtainedAt">
+            <summary>Timestamp when the coupon was obtained</summary>
+        </member>
+        <member name="T:TasteHub.Models.Recipe">
+            <summary>
+            Recipe data model for storing food and drink recipe information
+            </summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Id">
+            <summary>Primary key, auto-increment ID</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Name">
+            <summary>Recipe name</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Category">
+            <summary>Main category: Food or Drink</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.SubCategory">
+            <summary>Sub-category: Breakfast, Lunch, Dinner, Dessert, Cold Drink, Hot Drink, etc.</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Description">
+            <summary>Recipe description</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Ingredients">
+            <summary>Ingredients list stored as JSON string</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Steps">
+            <summary>Cooking steps stored as JSON string</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.ImagePath">
+            <summary>Cover image file path</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Calories">
+            <summary>Calories (kcal)</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Protein">
+            <summary>Protein in grams</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Carbs">
+            <summary>Carbohydrates in grams</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.Fat">
+            <summary>Fat in grams</summary>
+        </member>
+        <member name="P:TasteHub.Models.Recipe.CreatedAt">
+            <summary>Record creation timestamp</summary>
+        </member>
+        <member name="T:TasteHub.Services.DatabaseService">
+            <summary>
+            SQLite database service implementing all CRUD operations
+            </summary>
+        </member>
+        <member name="P:TasteHub.Services.DatabaseService.DatabasePath">
+            <summary>
+            Full path to the SQLite database file
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.InitAsync">
+            <summary>
+            Initialise the database connection and create tables if they do not exist
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.SeedSampleDataAsync">
+            <summary>
+            Insert sample recipes so the app is not empty on first launch
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.GetAllRecipesAsync">
+            <summary>
+            Retrieve all recipes from the database
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.GetRecipesByCategoryAsync(System.String)">
+            <summary>
+            Retrieve recipes filtered by main category (Food or Drink)
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.SearchRecipesAsync(System.String)">
+            <summary>
+            Search recipes by name or description
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.GetRecipeByIdAsync(System.Int32)">
+            <summary>
+            Retrieve a single recipe by its ID
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.SaveRecipeAsync(TasteHub.Models.Recipe)">
+            <summary>
+            Insert a new recipe or update an existing one
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.DeleteRecipeAsync(TasteHub.Models.Recipe)">
+            <summary>
+            Delete a recipe from the database
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.GetAllCouponsAsync">
+            <summary>
+            Retrieve all coupons from the database
+            </summary>
+        </member>
+        <member name="M:TasteHub.Services.DatabaseService.SaveCouponAsync(TasteHub.Models.Coupon)">
+            <summary>
+            Save a new coupon to the database
+            </summary>
+        </member>
+        <member name="T:TasteHub.Services.IDatabaseService">
+            <summary>
+            Interface for database operations on recipes and coupons
+            </summary>
+        </member>
+        <member name="T:TasteHub.ViewModels.AddEditViewModel">
+            <summary>
+            View model for the Add/Edit page, handling recipe creation and modification
+            with camera integration for cover photos
+            </summary>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._recipeId">
+            <summary>Recipe ID for edit mode; 0 means adding a new recipe</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._isEditMode">
+            <summary>Whether the form is in edit mode</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._recipeName">
+            <summary>Recipe name input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._selectedCategory">
+            <summary>Selected main category: Food or Drink</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._selectedSubCategory">
+            <summary>Selected sub-category</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._description">
+            <summary>Recipe description input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._imagePath">
+            <summary>Cover image file path</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._caloriesText">
+            <summary>Calories input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._proteinText">
+            <summary>Protein input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._carbsText">
+            <summary>Carbohydrates input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._fatText">
+            <summary>Fat input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._nameError">
+            <summary>Validation error for recipe name</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._categoryError">
+            <summary>Validation error for category</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._nutritionError">
+            <summary>Validation error for nutrition fields</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._ingredientsError">
+            <summary>Validation error for ingredients</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._stepsError">
+            <summary>Validation error for steps</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.Ingredients">
+            <summary>List of ingredients the user has added</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.Steps">
+            <summary>List of cooking steps the user has added</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.Categories">
+            <summary>Available main categories</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.SubCategories">
+            <summary>Available sub-categories, changes based on selected main category</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._newIngredient">
+            <summary>New ingredient text input</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel._newStep">
+            <summary>New step text input</summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.#ctor(TasteHub.Services.IDatabaseService)">
+            <summary>
+            Constructor with dependency injection of database service
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.UpdateSubCategories">
+            <summary>
+            Populate sub-category list based on the selected main category
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.LoadRecipeAsync">
+            <summary>
+            Load recipe data from database for editing
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.AddIngredient">
+            <summary>
+            Add a new ingredient to the list
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.RemoveIngredient(System.String)">
+            <summary>
+            Remove an ingredient from the list
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.AddStep">
+            <summary>
+            Add a new cooking step to the list
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.RemoveStep(System.String)">
+            <summary>
+            Remove a cooking step from the list
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.TakePhotoAsync">
+            <summary>
+            Take a photo using the device camera for the recipe cover image
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.PickPhotoAsync">
+            <summary>
+            Pick an existing photo from the device gallery
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.ValidateForm">
+            <summary>
+            Validate all form fields and return true if valid
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.SaveRecipeAsync">
+            <summary>
+            Save the recipe to the database after validation
+            </summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.RecipeId">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._recipeId"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.IsEditMode">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._isEditMode"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.RecipeName">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._recipeName"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.SelectedCategory">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._selectedCategory"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.SelectedSubCategory">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._selectedSubCategory"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.Description">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._description"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.ImagePath">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._imagePath"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.CaloriesText">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._caloriesText"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.ProteinText">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._proteinText"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.CarbsText">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._carbsText"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.FatText">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._fatText"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.NameError">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._nameError"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.CategoryError">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._categoryError"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.NutritionError">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._nutritionError"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.IngredientsError">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._ingredientsError"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.StepsError">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._stepsError"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.NewIngredient">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._newIngredient"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.NewStep">
+            <inheritdoc cref="F:TasteHub.ViewModels.AddEditViewModel._newStep"/>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.OnRecipeIdChanged(System.Int32)">
+            <summary>
+            Load existing recipe data when RecipeId is set (edit mode)
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.AddEditViewModel.OnSelectedCategoryChanged(System.String)">
+            <summary>
+            Update sub-category options when main category changes
+            </summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.addIngredientCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.AddIngredientCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.AddIngredientCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.AddIngredient"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.removeIngredientCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.RemoveIngredientCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.RemoveIngredientCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.RemoveIngredient(System.String)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.addStepCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.AddStepCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.AddStepCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.AddStep"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.removeStepCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.RemoveStepCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.RemoveStepCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.RemoveStep(System.String)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.takePhotoCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.TakePhotoCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.TakePhotoCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.TakePhotoAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.pickPhotoCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.PickPhotoCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.PickPhotoCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.PickPhotoAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.AddEditViewModel.saveRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.AddEditViewModel.SaveRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.AddEditViewModel.SaveRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.AddEditViewModel.SaveRecipeAsync"/>.</summary>
+        </member>
+        <member name="T:TasteHub.ViewModels.BaseViewModel">
+            <summary>
+            Base view model providing shared properties for all view models
+            </summary>
+            <inheritdoc/>
+        </member>
+        <member name="F:TasteHub.ViewModels.BaseViewModel._isBusy">
+            <summary>Indicates whether the view model is currently loading data</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.BaseViewModel._title">
+            <summary>Title displayed on the page</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.BaseViewModel.IsBusy">
+            <inheritdoc cref="F:TasteHub.ViewModels.BaseViewModel._isBusy"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.BaseViewModel.Title">
+            <inheritdoc cref="F:TasteHub.ViewModels.BaseViewModel._title"/>
+        </member>
+        <member name="T:TasteHub.ViewModels.DetailViewModel">
+            <summary>
+            View model for the Detail page, displaying full recipe information
+            with text-to-speech step-by-step reading
+            </summary>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel._recipeId">
+            <summary>Recipe ID passed via navigation query</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel._recipe">
+            <summary>The full recipe object loaded from database</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.IngredientsList">
+            <summary>Parsed list of ingredients for display</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.StepsList">
+            <summary>Parsed list of cooking steps for display</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel._currentReadingStep">
+            <summary>Index of the step currently being read aloud by TTS</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel._isReading">
+            <summary>Whether TTS is currently reading steps</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel._imageScale">
+            <summary>Current image scale for pinch-to-zoom</summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.#ctor(TasteHub.Services.IDatabaseService)">
+            <summary>
+            Constructor with dependency injection of database service
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.LoadRecipeAsync">
+            <summary>
+            Load the full recipe from the database and parse ingredients and steps
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.ReadStepsAloudAsync">
+            <summary>
+            Read all cooking steps aloud using text-to-speech,
+            highlighting the current step visually
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.EditRecipeAsync">
+            <summary>
+            Navigate to the edit page for the current recipe
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.DeleteRecipeAsync">
+            <summary>
+            Delete the current recipe with confirmation
+            </summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.RecipeId">
+            <inheritdoc cref="F:TasteHub.ViewModels.DetailViewModel._recipeId"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.Recipe">
+            <inheritdoc cref="F:TasteHub.ViewModels.DetailViewModel._recipe"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.CurrentReadingStep">
+            <inheritdoc cref="F:TasteHub.ViewModels.DetailViewModel._currentReadingStep"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.IsReading">
+            <inheritdoc cref="F:TasteHub.ViewModels.DetailViewModel._isReading"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.ImageScale">
+            <inheritdoc cref="F:TasteHub.ViewModels.DetailViewModel._imageScale"/>
+        </member>
+        <member name="M:TasteHub.ViewModels.DetailViewModel.OnRecipeIdChanged(System.Int32)">
+            <summary>
+            Load recipe data when the RecipeId property changes
+            </summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel.loadRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.DetailViewModel.LoadRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.LoadRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.DetailViewModel.LoadRecipeAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel.readStepsAloudCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.DetailViewModel.ReadStepsAloudCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.ReadStepsAloudCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.DetailViewModel.ReadStepsAloudAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel.editRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.DetailViewModel.EditRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.EditRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.DetailViewModel.EditRecipeAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.DetailViewModel.deleteRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.DetailViewModel.DeleteRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.DetailViewModel.DeleteRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.DetailViewModel.DeleteRecipeAsync"/>.</summary>
+        </member>
+        <member name="T:TasteHub.ViewModels.HomeViewModel">
+            <summary>
+            View model for the Home page, handling recipe listing, search,
+            category filtering, barometer recommendation and shake-to-earn coupon
+            </summary>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.Recipes">
+            <summary>Full collection of recipes displayed in the list</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._selectedCategory">
+            <summary>Currently selected category filter: All, Food, or Drink</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._searchText">
+            <summary>User search query text</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._recommendedRecipe">
+            <summary>Barometer-based recommended recipe</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._showCouponPopup">
+            <summary>Whether a coupon popup should be displayed</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._latestCoupon">
+            <summary>Most recently earned coupon</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel._currentPressure">
+            <summary>Current barometer pressure reading in hPa</summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.#ctor(TasteHub.Services.IDatabaseService)">
+            <summary>
+            Constructor with dependency injection of database service
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.LoadRecipesAsync">
+            <summary>
+            Load all recipes from the database and apply current filters
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.GoToDetailAsync(TasteHub.Models.Recipe)">
+            <summary>
+            Navigate to the recipe detail page
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.GoToAddRecipeAsync">
+            <summary>
+            Navigate to the add recipe page
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.DeleteRecipeAsync(TasteHub.Models.Recipe)">
+            <summary>
+            Delete a recipe with confirmation dialog
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.ShakeDetectedAsync">
+            <summary>
+            Generate a random coupon when the user shakes the device
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.UpdateBarometerRecommendationAsync(System.Double)">
+            <summary>
+            Recommend a recipe based on barometer pressure reading.
+            Low pressure suggests warm food/drinks, high pressure suggests cold ones.
+            </summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.SelectedCategory">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._selectedCategory"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.SearchText">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._searchText"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.RecommendedRecipe">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._recommendedRecipe"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.ShowCouponPopup">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._showCouponPopup"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.LatestCoupon">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._latestCoupon"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.CurrentPressure">
+            <inheritdoc cref="F:TasteHub.ViewModels.HomeViewModel._currentPressure"/>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.OnSelectedCategoryChanged(System.String)">
+            <summary>
+            Filter recipes when the selected category changes
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.HomeViewModel.OnSearchTextChanged(System.String)">
+            <summary>
+            Filter recipes when the search text changes
+            </summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.loadRecipesCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.LoadRecipesCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.LoadRecipesCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.LoadRecipesAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.goToDetailCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.GoToDetailCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.GoToDetailCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.GoToDetailAsync(TasteHub.Models.Recipe)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.goToAddRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.GoToAddRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.GoToAddRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.GoToAddRecipeAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.deleteRecipeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.DeleteRecipeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.DeleteRecipeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.DeleteRecipeAsync(TasteHub.Models.Recipe)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.shakeDetectedCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.ShakeDetectedCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.ShakeDetectedCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.ShakeDetectedAsync"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.HomeViewModel.updateBarometerRecommendationCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.HomeViewModel.UpdateBarometerRecommendationCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.HomeViewModel.UpdateBarometerRecommendationCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.HomeViewModel.UpdateBarometerRecommendationAsync(System.Double)"/>.</summary>
+        </member>
+        <member name="T:TasteHub.ViewModels.InteractiveViewModel">
+            <summary>
+            View model for the Interactive cooking page, handling accelerometer,
+            gyroscope and shake hardware features for simulated cooking experience
+            </summary>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._recipeName">
+            <summary>Name of the recipe being prepared</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._recipeCategory">
+            <summary>Category of the recipe (Food or Drink)</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._tiltAngle">
+            <summary>Current tilt angle of the device in degrees</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._pourProgress">
+            <summary>Pour progress from 0 to 100 based on tilt angle</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._pourCompleted">
+            <summary>Whether the pouring step is completed</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._pourLabel">
+            <summary>Label describing the pour action based on recipe category</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._rotationSpeed">
+            <summary>Current rotation speed detected by gyroscope</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._stirProgress">
+            <summary>Stir progress from 0 to 100 based on cumulative rotation</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._stirCompleted">
+            <summary>Whether the stirring step is completed</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._stirAnimationAngle">
+            <summary>Visual rotation angle for the stir animation</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._shakeCount">
+            <summary>Number of shakes detected</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._shakeProgress">
+            <summary>Shake progress from 0 to 100 based on shake count</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._shakeCompleted">
+            <summary>Whether the shaking step is completed</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._currentStep">
+            <summary>Current step index (0=Pour, 1=Stir, 2=Shake)</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._allCompleted">
+            <summary>Whether all cooking steps are completed</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel._statusMessage">
+            <summary>Status message displayed to the user</summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.UpdateAccelerometer(System.Double)">
+            <summary>
+            Process accelerometer reading to update pour progress.
+            Maps tilt angle to a 0-100 progress value.
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.UpdateGyroscope(System.Double)">
+            <summary>
+            Process gyroscope reading to update stir progress.
+            Maps rotation speed to stir animation and progress.
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.ShakeDetected">
+            <summary>
+            Increment shake count and update progress when a shake is detected
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.ResetCooking">
+            <summary>
+            Reset all progress and start the cooking process again
+            </summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.RecipeName">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._recipeName"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.RecipeCategory">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._recipeCategory"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.TiltAngle">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._tiltAngle"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.PourProgress">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._pourProgress"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.PourCompleted">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._pourCompleted"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.PourLabel">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._pourLabel"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.RotationSpeed">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._rotationSpeed"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.StirProgress">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._stirProgress"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.StirCompleted">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._stirCompleted"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.StirAnimationAngle">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._stirAnimationAngle"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.ShakeCount">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._shakeCount"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.ShakeProgress">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._shakeProgress"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.ShakeCompleted">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._shakeCompleted"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.CurrentStep">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._currentStep"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.AllCompleted">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._allCompleted"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.StatusMessage">
+            <inheritdoc cref="F:TasteHub.ViewModels.InteractiveViewModel._statusMessage"/>
+        </member>
+        <member name="M:TasteHub.ViewModels.InteractiveViewModel.OnRecipeCategoryChanged(System.String)">
+            <summary>
+            Update pour label based on recipe category
+            </summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel.updateAccelerometerCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.InteractiveViewModel.UpdateAccelerometerCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.UpdateAccelerometerCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.InteractiveViewModel.UpdateAccelerometer(System.Double)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel.updateGyroscopeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.InteractiveViewModel.UpdateGyroscopeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.UpdateGyroscopeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand`1"/> instance wrapping <see cref="M:TasteHub.ViewModels.InteractiveViewModel.UpdateGyroscope(System.Double)"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel.shakeDetectedCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.InteractiveViewModel.ShakeDetectedCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.ShakeDetectedCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.InteractiveViewModel.ShakeDetected"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.InteractiveViewModel.resetCookingCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.InteractiveViewModel.ResetCookingCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.InteractiveViewModel.ResetCookingCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.InteractiveViewModel.ResetCooking"/>.</summary>
+        </member>
+        <member name="T:TasteHub.ViewModels.SettingsViewModel">
+            <summary>
+            View model for the Settings page, managing theme and font size preferences
+            </summary>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel._isDarkMode">
+            <summary>Whether dark mode is currently enabled</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel._selectedFontSize">
+            <summary>Currently selected font size label</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel._fontSizeValue">
+            <summary>Current font size value in pixels</summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.#ctor">
+            <summary>
+            Constructor that loads saved preferences
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.LoadPreferences">
+            <summary>
+            Load saved theme and font size preferences from app storage
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.ApplyTheme(System.Boolean)">
+            <summary>
+            Apply the selected theme to the application
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.SetFontSmall">
+            <summary>
+            Set font size to Small (13px)
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.SetFontMedium">
+            <summary>
+            Set font size to Medium (16px)
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.SetFontLarge">
+            <summary>
+            Set font size to Large (20px)
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.SetFontExtraLarge">
+            <summary>
+            Set font size to Extra Large (24px)
+            </summary>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.ApplyFontSize(System.String)">
+            <summary>
+            Apply the selected font size to the application resources
+            </summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.IsDarkMode">
+            <inheritdoc cref="F:TasteHub.ViewModels.SettingsViewModel._isDarkMode"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.SelectedFontSize">
+            <inheritdoc cref="F:TasteHub.ViewModels.SettingsViewModel._selectedFontSize"/>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.FontSizeValue">
+            <inheritdoc cref="F:TasteHub.ViewModels.SettingsViewModel._fontSizeValue"/>
+        </member>
+        <member name="M:TasteHub.ViewModels.SettingsViewModel.OnIsDarkModeChanged(System.Boolean)">
+            <summary>
+            Toggle between dark and light theme
+            </summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel.setFontSmallCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.SettingsViewModel.SetFontSmallCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.SetFontSmallCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.SettingsViewModel.SetFontSmall"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel.setFontMediumCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.SettingsViewModel.SetFontMediumCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.SetFontMediumCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.SettingsViewModel.SetFontMedium"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel.setFontLargeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.SettingsViewModel.SetFontLargeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.SetFontLargeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.SettingsViewModel.SetFontLarge"/>.</summary>
+        </member>
+        <member name="F:TasteHub.ViewModels.SettingsViewModel.setFontExtraLargeCommand">
+            <summary>The backing field for <see cref="P:TasteHub.ViewModels.SettingsViewModel.SetFontExtraLargeCommand"/>.</summary>
+        </member>
+        <member name="P:TasteHub.ViewModels.SettingsViewModel.SetFontExtraLargeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:TasteHub.ViewModels.SettingsViewModel.SetFontExtraLarge"/>.</summary>
+        </member>
+        <member name="T:TasteHub.Views.AddEditPage">
+            <summary>
+            Page for adding a new recipe or editing an existing one,
+            with camera integration for cover photos
+            </summary>
+        </member>
+        <member name="T:TasteHub.Views.DetailPage">
+            <summary>
+            Detail page showing full recipe information with TTS and pinch-to-zoom
+            </summary>
+        </member>
+        <member name="M:TasteHub.Views.DetailPage.OnPinchUpdated(System.Object,Microsoft.Maui.Controls.PinchGestureUpdatedEventArgs)">
+            <summary>
+            Handle pinch gesture to zoom the recipe cover image
+            </summary>
+        </member>
+        <member name="M:TasteHub.Views.DetailPage.OnCookClicked(System.Object,System.EventArgs)">
+            <summary>
+            Navigate to interactive cooking page with recipe info
+            </summary>
+        </member>
+        <member name="T:TasteHub.Views.SettingsPage">
+            <summary>
+            Settings page for managing theme, font size and viewing
+            accessibility information
+            </summary>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Button.TextColorTo(Microsoft.Maui.Controls.Button,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_DatePicker.TextColorTo(Microsoft.Maui.Controls.DatePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Editor.TextColorTo(Microsoft.Maui.Controls.Editor,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Entry.TextColorTo(Microsoft.Maui.Controls.Entry,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_InputView.TextColorTo(Microsoft.Maui.Controls.InputView,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Label.TextColorTo(Microsoft.Maui.Controls.Label,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Picker.TextColorTo(Microsoft.Maui.Controls.Picker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_RadioButton.TextColorTo(Microsoft.Maui.Controls.RadioButton,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_SearchBar.TextColorTo(Microsoft.Maui.Controls.SearchBar,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_TimePicker.TextColorTo(Microsoft.Maui.Controls.TimePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RecipeId">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RecipeId" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsEditMode">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsEditMode" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RecipeName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RecipeName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedSubCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedSubCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Description">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Description" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ImagePath">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ImagePath" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CaloriesText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CaloriesText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ProteinText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ProteinText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CarbsText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CarbsText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FatText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FatText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NameError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NameError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CategoryError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CategoryError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NutritionError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NutritionError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IngredientsError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IngredientsError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StepsError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StepsError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NewIngredient">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NewIngredient" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NewStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NewStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Title">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Title" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Recipe">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Recipe" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CurrentReadingStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CurrentReadingStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsReading">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsReading" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ImageScale">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ImageScale" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SearchText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SearchText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RecommendedRecipe">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RecommendedRecipe" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ShowCouponPopup">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ShowCouponPopup" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.LatestCoupon">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "LatestCoupon" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CurrentPressure">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CurrentPressure" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RecipeCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RecipeCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.TiltAngle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "TiltAngle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PourProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PourProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PourCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PourCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PourLabel">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PourLabel" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RotationSpeed">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RotationSpeed" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StirProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StirProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StirCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StirCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StirAnimationAngle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StirAnimationAngle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ShakeCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ShakeCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ShakeProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ShakeProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ShakeCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ShakeCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CurrentStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CurrentStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.AllCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "AllCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StatusMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StatusMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsDarkMode">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsDarkMode" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedFontSize">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedFontSize" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FontSizeValue">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FontSizeValue" generated properties.</summary>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RecipeId">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RecipeId" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsEditMode">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsEditMode" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RecipeName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RecipeName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedSubCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedSubCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Description">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Description" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ImagePath">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ImagePath" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CaloriesText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CaloriesText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ProteinText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ProteinText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CarbsText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CarbsText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FatText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FatText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NameError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NameError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CategoryError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CategoryError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NutritionError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NutritionError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IngredientsError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IngredientsError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StepsError">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StepsError" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NewIngredient">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NewIngredient" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NewStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NewStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Title">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Title" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Recipe">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Recipe" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CurrentReadingStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CurrentReadingStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsReading">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsReading" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ImageScale">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ImageScale" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SearchText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SearchText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RecommendedRecipe">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RecommendedRecipe" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ShowCouponPopup">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ShowCouponPopup" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.LatestCoupon">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "LatestCoupon" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CurrentPressure">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CurrentPressure" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RecipeCategory">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RecipeCategory" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.TiltAngle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "TiltAngle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PourProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PourProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PourCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PourCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PourLabel">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PourLabel" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RotationSpeed">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RotationSpeed" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StirProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StirProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StirCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StirCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StirAnimationAngle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StirAnimationAngle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ShakeCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ShakeCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ShakeProgress">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ShakeProgress" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ShakeCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ShakeCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CurrentStep">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CurrentStep" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.AllCompleted">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "AllCompleted" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StatusMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StatusMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsDarkMode">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsDarkMode" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedFontSize">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedFontSize" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FontSizeValue">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FontSizeValue" generated properties.</summary>
+        </member>
+    </members>
+</doc>

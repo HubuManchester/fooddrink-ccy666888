@@ -71,15 +71,15 @@ providing a unique and engaging user experience.
 ## Project Structure
 ```
 TasteHub/
-©À©¤©¤ Models/          # Data models (Recipe, Coupon)
-©À©¤©¤ ViewModels/      # MVVM view models
-©À©¤©¤ Views/           # XAML pages
-©À©¤©¤ Services/        # Database and hardware services
-©À©¤©¤ Converters/      # XAML value converters
-©À©¤©¤ Resources/       # Images, fonts, styles
-©À©¤©¤ App.xaml         # Global resources and themes
-©À©¤©¤ AppShell.xaml    # Navigation structure
-©¸©¤©¤ MauiProgram.cs   # Dependency injection setup
+├── Models/          # Data models (Recipe, Coupon)
+├── ViewModels/      # MVVM view models
+├── Views/           # XAML pages
+├── Services/        # Database and hardware services
+├── Converters/      # XAML value converters
+├── Resources/       # Images, fonts, styles
+├── App.xaml         # Global resources and themes
+├── AppShell.xaml    # Navigation structure
+└── MauiProgram.cs   # Dependency injection setup
 ```
 
 ## Prerequisites

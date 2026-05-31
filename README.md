@@ -1,7 +1,7 @@
 # TasteHub - Food and Drink Recipe App
 
 ## Author
-**[Your Name]** - Manchester Metropolitan University
+**ChangyuChen** - StudentID:20906256
 
 ## Module
 6G6Z0014 - Mobile Computing
@@ -54,11 +54,14 @@ providing a unique and engaging user experience.
 | Phase | Description | Status |
 | --- | --- | --- |
 | Phase 1 | Main page structure, navigation, data model, SQLite CRUD | Complete |
-| Phase 2 | Hardware features implementation | Planned |
+| Phase 2 | Hardware features implementation | In Progress |
 | Phase 3 | Theme, font settings, WCAG accessibility | Planned |
 | Phase 4 | Bug fixes, validation, error handling, optimisation | Planned |
 
+
+
 ## Tech Stack
+
 - **.NET MAUI** (.NET 8) - Cross-platform UI framework
 - **CommunityToolkit.Mvvm** - MVVM architecture with source generators
 - **CommunityToolkit.Maui** - UI enhancements and analysers
@@ -68,22 +71,25 @@ providing a unique and engaging user experience.
 ## Project Structure
 ```
 TasteHub/
-©À©¤©¤ Models/          # Data models (Recipe, Coupon)
-©À©¤©¤ ViewModels/      # MVVM view models
-©À©¤©¤ Views/           # XAML pages
-©À©¤©¤ Services/        # Database and hardware services
-©À©¤©¤ Converters/      # XAML value converters
-©À©¤©¤ Resources/       # Images, fonts, styles
-©À©¤©¤ App.xaml         # Global resources and themes
-©À©¤©¤ AppShell.xaml    # Navigation structure
-©¸©¤©¤ MauiProgram.cs   # Dependency injection setup
+Â©Ã€Â©Â¤Â©Â¤ Models/          # Data models (Recipe, Coupon)
+Â©Ã€Â©Â¤Â©Â¤ ViewModels/      # MVVM view models
+Â©Ã€Â©Â¤Â©Â¤ Views/           # XAML pages
+Â©Ã€Â©Â¤Â©Â¤ Services/        # Database and hardware services
+Â©Ã€Â©Â¤Â©Â¤ Converters/      # XAML value converters
+Â©Ã€Â©Â¤Â©Â¤ Resources/       # Images, fonts, styles
+Â©Ã€Â©Â¤Â©Â¤ App.xaml         # Global resources and themes
+Â©Ã€Â©Â¤Â©Â¤ AppShell.xaml    # Navigation structure
+Â©Â¸Â©Â¤Â©Â¤ MauiProgram.cs   # Dependency injection setup
 ```
 
 ## Prerequisites
-- Visual Studio 2022 (v17.8+)
-- .NET 8 SDK
+- Visual Studio 2022 Professional (v17.14.27)
+- .NET 9 SDK (v9.0.311)
 - .NET MAUI workload installed
-- Android SDK (API 21+)
+- Android SDK Platform 34
+- Android Emulator 35.5.10
+- Android device or emulator (minimum API 21)
+- NuGet packages: CommunityToolkit.Maui 9.1.0, CommunityToolkit.Mvvm 8.4.2, sqlite-net-pcl 1.9.172
 
 ## How to Run
 1. Clone this repository
@@ -97,4 +103,4 @@ TasteHub/
 - **Android tablet** - Secondary deployment for responsive layout testing
 
 ## Version History
-- v1.0 - Initial release with full recipe management and 7 hardware features
+- v0.1 - Phase 1: Main page structure, Shell navigation, data models, SQLite CRUD, sample data seeding

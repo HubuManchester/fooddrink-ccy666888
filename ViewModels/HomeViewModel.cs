@@ -1,13 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntelliJ.Lang.Annotations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TasteHub.Models;
 using TasteHub.Services;
-using static Android.Icu.Text.CaseMap;
 
 namespace TasteHub.ViewModels
 {
@@ -18,6 +16,7 @@ namespace TasteHub.ViewModels
     public partial class HomeViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
+        private bool _isLoading = false;
 
         /// <summary>Full collection of recipes displayed in the list</summary>
         public ObservableCollection<Recipe> Recipes { get; } = new();
@@ -56,12 +55,14 @@ namespace TasteHub.ViewModels
         }
 
         /// <summary>
-        /// Load all recipes from the database and apply current filters
+        /// Load all recipes from the database and apply current filters.
+        /// Uses _isLoading flag to prevent concurrent loading.
         /// </summary>
         [RelayCommand]
         public async Task LoadRecipesAsync()
         {
-            if (IsBusy) return;
+            if (_isLoading) return;
+            _isLoading = true;
 
             try
             {
@@ -99,15 +100,8 @@ namespace TasteHub.ViewModels
             finally
             {
                 IsBusy = false;
+                _isLoading = false;
             }
-        }
-
-        /// <summary>
-        /// Filter recipes when the selected category changes
-        /// </summary>
-        partial void OnSelectedCategoryChanged(string value)
-        {
-            MainThread.BeginInvokeOnMainThread(async () => await LoadRecipesAsync());
         }
 
         /// <summary>
@@ -115,7 +109,7 @@ namespace TasteHub.ViewModels
         /// </summary>
         partial void OnSearchTextChanged(string value)
         {
-            MainThread.BeginInvokeOnMainThread(async () => await LoadRecipesAsync());
+            LoadRecipesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -126,7 +120,16 @@ namespace TasteHub.ViewModels
         {
             if (recipe == null) return;
 
-            await Shell.Current.GoToAsync($"DetailPage?id={recipe.Id}");
+            try
+            {
+                await Shell.Current.GoToAsync($"DetailPage?id={recipe.Id}");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error",
+                    "Failed to open recipe details. Please try again.", "OK");
+                System.Diagnostics.Debug.WriteLine($"GoToDetail error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -135,7 +138,16 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public async Task GoToAddRecipeAsync()
         {
-            await Shell.Current.GoToAsync("AddEditPage");
+            try
+            {
+                await Shell.Current.GoToAsync("AddEditPage");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error",
+                    "Failed to open add recipe page. Please try again.", "OK");
+                System.Diagnostics.Debug.WriteLine($"GoToAddRecipe error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -185,6 +197,11 @@ namespace TasteHub.ViewModels
                 await _databaseService.SaveCouponAsync(coupon);
                 LatestCoupon = coupon;
                 ShowCouponPopup = true;
+
+                await Shell.Current.DisplayAlert("Coupon Earned!",
+                    $"Code: {coupon.Code}\n{coupon.Description}", "Awesome!");
+
+                ShowCouponPopup = false;
             }
             catch (Exception ex)
             {

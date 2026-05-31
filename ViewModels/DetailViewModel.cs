@@ -1,13 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntelliJ.Lang.Annotations;
 using System;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TasteHub.Models;
 using TasteHub.Services;
-using static Android.Icu.Text.CaseMap;
 
 namespace TasteHub.ViewModels
 {
@@ -186,7 +184,17 @@ namespace TasteHub.ViewModels
         public async Task EditRecipeAsync()
         {
             if (Recipe == null) return;
-            await Shell.Current.GoToAsync($"AddEditPage?id={Recipe.Id}");
+
+            try
+            {
+                await Shell.Current.GoToAsync($"AddEditPage?id={Recipe.Id}");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error",
+                    "Failed to open edit page. Please try again.", "OK");
+                System.Diagnostics.Debug.WriteLine($"EditRecipe error: {ex.Message}");
+            }
         }
 
         /// <summary>

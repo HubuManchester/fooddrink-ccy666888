@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Threading.Tasks;
 using TasteHub.Models;
-using static Android.Icu.Text.CaseMap;
 
 namespace TasteHub.ViewModels
 {
@@ -112,23 +111,30 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void UpdateAccelerometer(double zValue)
         {
-            if (PourCompleted) return;
-
-            // Map Z-axis value to tilt angle (0-90 degrees)
-            TiltAngle = Math.Abs(zValue) * 90;
-
-            // Only count significant tilts (more than 30 degrees)
-            if (TiltAngle > 30)
+            try
             {
-                double increment = (TiltAngle - 30) / 60 * 2;
-                PourProgress = Math.Min(100, PourProgress + increment);
+                if (PourCompleted) return;
+
+                // Map Z-axis value to tilt angle (0-90 degrees)
+                TiltAngle = Math.Abs(zValue) * 90;
+
+                // Only count significant tilts (more than 30 degrees)
+                if (TiltAngle > 30)
+                {
+                    double increment = (TiltAngle - 30) / 60 * 2;
+                    PourProgress = Math.Min(100, PourProgress + increment);
+                }
+
+                if (PourProgress >= 100)
+                {
+                    PourCompleted = true;
+                    CurrentStep = 1;
+                    StatusMessage = "Step 2: Rotate your phone to stir!";
+                }
             }
-
-            if (PourProgress >= 100)
+            catch (Exception ex)
             {
-                PourCompleted = true;
-                CurrentStep = 1;
-                StatusMessage = "Step 2: Rotate your phone to stir!";
+                System.Diagnostics.Debug.WriteLine($"Accelerometer update error: {ex.Message}");
             }
         }
 
@@ -139,25 +145,32 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void UpdateGyroscope(double angularVelocity)
         {
-            if (!PourCompleted || StirCompleted) return;
-
-            RotationSpeed = Math.Abs(angularVelocity);
-
-            // Update animation angle
-            StirAnimationAngle = (StirAnimationAngle + angularVelocity * 10) % 360;
-
-            // Increment progress based on rotation speed
-            if (RotationSpeed > 0.5)
+            try
             {
-                double increment = RotationSpeed * 0.5;
-                StirProgress = Math.Min(100, StirProgress + increment);
+                if (!PourCompleted || StirCompleted) return;
+
+                RotationSpeed = Math.Abs(angularVelocity);
+
+                // Update animation angle
+                StirAnimationAngle = (StirAnimationAngle + angularVelocity * 10) % 360;
+
+                // Increment progress based on rotation speed
+                if (RotationSpeed > 0.5)
+                {
+                    double increment = RotationSpeed * 0.5;
+                    StirProgress = Math.Min(100, StirProgress + increment);
+                }
+
+                if (StirProgress >= 100)
+                {
+                    StirCompleted = true;
+                    CurrentStep = 2;
+                    StatusMessage = "Step 3: Shake your phone to mix!";
+                }
             }
-
-            if (StirProgress >= 100)
+            catch (Exception ex)
             {
-                StirCompleted = true;
-                CurrentStep = 2;
-                StatusMessage = "Step 3: Shake your phone to mix!";
+                System.Diagnostics.Debug.WriteLine($"Gyroscope update error: {ex.Message}");
             }
         }
 
@@ -167,16 +180,23 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void ShakeDetected()
         {
-            if (!StirCompleted || ShakeCompleted) return;
-
-            ShakeCount++;
-            ShakeProgress = Math.Min(100, ShakeCount * 10);
-
-            if (ShakeProgress >= 100)
+            try
             {
-                ShakeCompleted = true;
-                AllCompleted = true;
-                StatusMessage = "All done! Your dish is ready!";
+                if (!StirCompleted || ShakeCompleted) return;
+
+                ShakeCount++;
+                ShakeProgress = Math.Min(100, ShakeCount * 10);
+
+                if (ShakeProgress >= 100)
+                {
+                    ShakeCompleted = true;
+                    AllCompleted = true;
+                    StatusMessage = "All done! Your dish is ready!";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Shake detection error: {ex.Message}");
             }
         }
 
@@ -186,17 +206,24 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void ResetCooking()
         {
-            PourProgress = 0;
-            PourCompleted = false;
-            StirProgress = 0;
-            StirCompleted = false;
-            StirAnimationAngle = 0;
-            ShakeCount = 0;
-            ShakeProgress = 0;
-            ShakeCompleted = false;
-            AllCompleted = false;
-            CurrentStep = 0;
-            StatusMessage = "Step 1: Tilt your phone to pour ingredients!";
+            try
+            {
+                PourProgress = 0;
+                PourCompleted = false;
+                StirProgress = 0;
+                StirCompleted = false;
+                StirAnimationAngle = 0;
+                ShakeCount = 0;
+                ShakeProgress = 0;
+                ShakeCompleted = false;
+                AllCompleted = false;
+                CurrentStep = 0;
+                StatusMessage = "Step 1: Tilt your phone to pour ingredients!";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Reset cooking error: {ex.Message}");
+            }
         }
     }
 }

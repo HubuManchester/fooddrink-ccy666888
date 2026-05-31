@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using static Android.Icu.Text.CaseMap;
 
 namespace TasteHub.ViewModels
 {
@@ -70,11 +69,18 @@ namespace TasteHub.ViewModels
         /// </summary>
         private void ApplyTheme(bool isDark)
         {
-            if (Application.Current != null)
+            try
             {
-                Application.Current.UserAppTheme = isDark
-                    ? AppTheme.Dark
-                    : AppTheme.Light;
+                if (Application.Current != null)
+                {
+                    Application.Current.UserAppTheme = isDark
+                        ? AppTheme.Dark
+                        : AppTheme.Light;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ApplyTheme error: {ex.Message}");
             }
         }
 
@@ -84,9 +90,16 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void SetFontSmall()
         {
-            SelectedFontSize = "Small";
-            ApplyFontSize("Small");
-            Preferences.Set("FontSize", "Small");
+            try
+            {
+                SelectedFontSize = "Small";
+                ApplyFontSize("Small");
+                Preferences.Set("FontSize", "Small");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetFontSmall error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -95,9 +108,16 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void SetFontMedium()
         {
-            SelectedFontSize = "Medium";
-            ApplyFontSize("Medium");
-            Preferences.Set("FontSize", "Medium");
+            try
+            {
+                SelectedFontSize = "Medium";
+                ApplyFontSize("Medium");
+                Preferences.Set("FontSize", "Medium");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetFontMedium error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -106,9 +126,16 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void SetFontLarge()
         {
-            SelectedFontSize = "Large";
-            ApplyFontSize("Large");
-            Preferences.Set("FontSize", "Large");
+            try
+            {
+                SelectedFontSize = "Large";
+                ApplyFontSize("Large");
+                Preferences.Set("FontSize", "Large");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetFontLarge error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -117,9 +144,16 @@ namespace TasteHub.ViewModels
         [RelayCommand]
         public void SetFontExtraLarge()
         {
-            SelectedFontSize = "Extra Large";
-            ApplyFontSize("Extra Large");
-            Preferences.Set("FontSize", "Extra Large");
+            try
+            {
+                SelectedFontSize = "Extra Large";
+                ApplyFontSize("Extra Large");
+                Preferences.Set("FontSize", "Extra Large");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetFontExtraLarge error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -127,21 +161,28 @@ namespace TasteHub.ViewModels
         /// </summary>
         private void ApplyFontSize(string size)
         {
-            FontSizeValue = size switch
+            try
             {
-                "Small" => 13,
-                "Medium" => 16,
-                "Large" => 20,
-                "Extra Large" => 24,
-                _ => 16
-            };
+                FontSizeValue = size switch
+                {
+                    "Small" => 13,
+                    "Medium" => 16,
+                    "Large" => 20,
+                    "Extra Large" => 24,
+                    _ => 16
+                };
 
-            if (Application.Current != null)
+                if (Application.Current != null)
+                {
+                    Application.Current.Resources["AppFontSize"] = FontSizeValue;
+                    Application.Current.Resources["AppFontSizeSmall"] = FontSizeValue - 2;
+                    Application.Current.Resources["AppFontSizeLarge"] = FontSizeValue + 4;
+                    Application.Current.Resources["AppFontSizeTitle"] = FontSizeValue + 8;
+                }
+            }
+            catch (Exception ex)
             {
-                Application.Current.Resources["AppFontSize"] = FontSizeValue;
-                Application.Current.Resources["AppFontSizeSmall"] = FontSizeValue - 2;
-                Application.Current.Resources["AppFontSizeLarge"] = FontSizeValue + 4;
-                Application.Current.Resources["AppFontSizeTitle"] = FontSizeValue + 8;
+                System.Diagnostics.Debug.WriteLine($"ApplyFontSize error: {ex.Message}");
             }
         }
     }

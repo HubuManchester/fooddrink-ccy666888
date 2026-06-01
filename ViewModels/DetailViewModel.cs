@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using TasteHub.Models;
 using TasteHub.Services;
@@ -17,6 +18,7 @@ namespace TasteHub.ViewModels
     public partial class DetailViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
+        private CancellationTokenSource _ttsCancellation;
 
         /// <summary>Recipe ID passed via navigation query</summary>
         [ObservableProperty]
@@ -131,7 +133,8 @@ namespace TasteHub.ViewModels
 
         /// <summary>
         /// Read all cooking steps aloud using text-to-speech,
-        /// highlighting the current step visually
+        /// highlighting the current step visually.
+        /// Supports cancellation when user taps Stop.
         /// </summary>
         [RelayCommand]
         public async Task ReadStepsAloudAsync()
@@ -141,12 +144,14 @@ namespace TasteHub.ViewModels
                 // Stop reading
                 IsReading = false;
                 CurrentReadingStep = -1;
+                _ttsCancellation?.Cancel();
                 return;
             }
 
             try
             {
                 IsReading = true;
+                _ttsCancellation = new CancellationTokenSource();
 
                 for (int i = 0; i < StepsList.Count; i++)
                 {
@@ -161,8 +166,14 @@ namespace TasteHub.ViewModels
                     };
 
                     await TextToSpeech.Default.SpeakAsync(
-                        $"Step {i + 1}: {StepsList[i]}", settings);
+                        $"Step {i + 1}: {StepsList[i]}", settings,
+                        _ttsCancellation.Token);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // TTS was cancelled by user, this is expected
+                System.Diagnostics.Debug.WriteLine("TTS cancelled by user");
             }
             catch (Exception ex)
             {
@@ -174,6 +185,8 @@ namespace TasteHub.ViewModels
             {
                 IsReading = false;
                 CurrentReadingStep = -1;
+                _ttsCancellation?.Dispose();
+                _ttsCancellation = null;
             }
         }
 

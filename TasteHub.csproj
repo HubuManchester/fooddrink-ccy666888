@@ -28,6 +28,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Platforms\Android\SpeechRecognitionListener.cs" />
+	  <Compile Remove="Services\SpeechService.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />

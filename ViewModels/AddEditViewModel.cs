@@ -1,14 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntelliJ.Lang.Annotations;
 using System;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TasteHub.Models;
 using TasteHub.Services;
-using static Android.Icu.Text.CaseMap;
-using static Android.Util.EventLogTags;
 
 namespace TasteHub.ViewModels
 {
@@ -285,46 +282,99 @@ namespace TasteHub.ViewModels
         }
 
         /// <summary>
-        /// Take a photo using the device camera for the recipe cover image
+        /// Take a photo using the device camera for the recipe cover image.
+        /// Uses Android native camera intent with CameraService to handle
+        /// the activity result and automatically save the photo.
+        /// Compatible with HarmonyOS devices.
         /// </summary>
         [RelayCommand]
         public async Task TakePhotoAsync()
         {
             try
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
+                // Request camera permission
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
                 {
-                    await Shell.Current.DisplayAlert("Error",
-                        "Camera is not supported on this device.", "OK");
-                    return;
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+                    if (cameraStatus != PermissionStatus.Granted)
+                    {
+                        await Shell.Current.DisplayAlert("Permission Denied",
+                            "Camera permission is required to take photos.", "OK");
+                        return;
+                    }
                 }
 
-                var photo = await MediaPicker.Default.CapturePhotoAsync();
-                if (photo != null)
+#if ANDROID
+                try
                 {
-                    string localPath = Path.Combine(FileSystem.AppDataDirectory, photo.FileName);
-                    using var stream = await photo.OpenReadAsync();
-                    using var newStream = File.OpenWrite(localPath);
-                    await stream.CopyToAsync(newStream);
-                    ImagePath = localPath;
+                    // Start waiting for photo result before launching camera
+                    var photoTask = CameraService.WaitForPhotoAsync();
+
+                    // Launch camera intent directly (no FileProvider needed)
+                    var intent = new Android.Content.Intent(
+                        Android.Provider.MediaStore.ActionImageCapture);
+                    Platform.CurrentActivity.StartActivityForResult(intent, 1002);
+
+                    // Wait for camera to return the photo via OnActivityResult
+                    string photoPath = await photoTask;
+
+                    if (!string.IsNullOrEmpty(photoPath))
+                    {
+                        ImagePath = photoPath;
+                        await Shell.Current.DisplayAlert("Success",
+                            "Photo captured and saved!", "OK");
+                    }
                 }
+                catch (Exception camEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Camera error: {camEx.Message}");
+                    await Shell.Current.DisplayAlert("Camera Error",
+                        $"Camera failed: {camEx.Message}\nPlease use Pick from Gallery.", "OK");
+                }
+#else
+                try
+                {
+                    var photo = await MediaPicker.Default.CapturePhotoAsync();
+                    if (photo != null)
+                    {
+                        string localPath = Path.Combine(FileSystem.AppDataDirectory, photo.FileName);
+                        using var stream = await photo.OpenReadAsync();
+                        using var newStream = File.OpenWrite(localPath);
+                        await stream.CopyToAsync(newStream);
+                        ImagePath = localPath;
+                    }
+                }
+                catch
+                {
+                    await Shell.Current.DisplayAlert("Camera Unavailable",
+                        "Please use Pick from Gallery.", "OK");
+                }
+#endif
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error",
-                    "Failed to take photo. Please try again.", "OK");
+                    "Failed to access camera. Please try again.", "OK");
                 System.Diagnostics.Debug.WriteLine($"TakePhoto error: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Pick an existing photo from the device gallery
+        /// Pick an existing photo from the device gallery.
+        /// Requests storage permission at runtime before attempting pick.
         /// </summary>
         [RelayCommand]
         public async Task PickPhotoAsync()
         {
             try
             {
+                var storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+                if (storageStatus != PermissionStatus.Granted)
+                {
+                    storageStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
+                }
+
                 var photo = await MediaPicker.Default.PickPhotoAsync();
                 if (photo != null)
                 {
@@ -350,7 +400,6 @@ namespace TasteHub.ViewModels
         {
             bool isValid = true;
 
-            // Validate name
             if (string.IsNullOrWhiteSpace(RecipeName))
             {
                 NameError = "Recipe name is required.";
@@ -366,7 +415,6 @@ namespace TasteHub.ViewModels
                 NameError = string.Empty;
             }
 
-            // Validate category
             if (string.IsNullOrWhiteSpace(SelectedCategory))
             {
                 CategoryError = "Please select a category.";
@@ -377,7 +425,6 @@ namespace TasteHub.ViewModels
                 CategoryError = string.Empty;
             }
 
-            // Validate nutrition (must be non-negative numbers)
             NutritionError = string.Empty;
             if (!string.IsNullOrWhiteSpace(CaloriesText) && !double.TryParse(CaloriesText, out double cal))
             {
@@ -400,7 +447,6 @@ namespace TasteHub.ViewModels
                 isValid = false;
             }
 
-            // Validate ingredients
             if (Ingredients.Count == 0)
             {
                 IngredientsError = "Please add at least one ingredient.";
@@ -411,7 +457,6 @@ namespace TasteHub.ViewModels
                 IngredientsError = string.Empty;
             }
 
-            // Validate steps
             if (Steps.Count == 0)
             {
                 StepsError = "Please add at least one step.";

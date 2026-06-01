@@ -8,7 +8,7 @@
              Title="{Binding Title}"
              SemanticProperties.Description="Home page displaying recipe list with search and filtering">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="15" RowSpacing="10">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" Padding="15" RowSpacing="10">
 
         <!-- Row 0: Search bar -->
         <SearchBar Grid.Row="0"
@@ -16,18 +16,27 @@
                    Text="{Binding SearchText}"
                    SemanticProperties.Hint="Type to search recipes by name or description"/>
 
-        <!-- Row 1: Category filter buttons -->
-        <HorizontalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center">
-            <Button Text="All"
-                    Clicked="OnAllCategoryClicked"
-                    SemanticProperties.Hint="Show all recipes"/>
-            <Button Text="Food"
-                    Clicked="OnFoodCategoryClicked"
-                    SemanticProperties.Hint="Show food recipes only"/>
-            <Button Text="Drink"
-                    Clicked="OnDrinkCategoryClicked"
-                    SemanticProperties.Hint="Show drink recipes only"/>
-        </HorizontalStackLayout>
+        <!-- Row 1: Category filter buttons and Surprise Me -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <HorizontalStackLayout Grid.Column="0" Spacing="10" HorizontalOptions="Center">
+                <Button Text="All"
+                        Clicked="OnAllCategoryClicked"
+                        SemanticProperties.Hint="Show all recipes"/>
+                <Button Text="Food"
+                        Clicked="OnFoodCategoryClicked"
+                        SemanticProperties.Hint="Show food recipes only"/>
+                <Button Text="Drink"
+                        Clicked="OnDrinkCategoryClicked"
+                        SemanticProperties.Hint="Show drink recipes only"/>
+            </HorizontalStackLayout>
+            <Button Grid.Column="1"
+                    Text="🧭"
+                    WidthRequest="50" HeightRequest="45"
+                    FontSize="22"
+                    Command="{Binding SurpriseMeCommand}"
+                    BackgroundColor="#FF9800"
+                    SemanticProperties.Hint="Surprise me with a random recipe using compass"/>
+        </Grid>
 
         <!-- Row 2: Barometer recommendation card -->
         <Frame Grid.Row="2" Padding="12" CornerRadius="12"
@@ -52,8 +61,34 @@
             </Grid>
         </Frame>
 
-        <!-- Row 3: Recipe list with pull-to-refresh and swipe -->
-        <RefreshView Grid.Row="3"
+        <!-- Row 3: Compass Surprise wheel (visible when spinning) -->
+        <Frame Grid.Row="3" Padding="15" CornerRadius="12"
+               BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#E65100}"
+               IsVisible="{Binding IsSpinning}"
+               SemanticProperties.Description="Compass wheel spinning to select a random recipe">
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Label Text="Spinning the Compass Wheel..."
+                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}"
+                       HorizontalTextAlignment="Center"/>
+                <Frame WidthRequest="120" HeightRequest="120"
+                       CornerRadius="60" Padding="0"
+                       BackgroundColor="{AppThemeBinding Light=#FFE0B2, Dark=#BF360C}"
+                       HorizontalOptions="Center"
+                       Rotation="{Binding CompassHeading}">
+                    <Label Text="🧭" FontSize="50"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+                <Label Text="{Binding CompassHeading, StringFormat='Heading: {0:F0}°'}"
+                       FontSize="{DynamicResource AppFontSizeSmall}"
+                       HorizontalTextAlignment="Center"
+                       Opacity="0.7"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Row 4: Recipe list with pull-to-refresh and swipe -->
+        <RefreshView Grid.Row="4"
                      IsRefreshing="{Binding IsBusy}"
                      Command="{Binding LoadRecipesCommand}">
             <CollectionView ItemsSource="{Binding Recipes}"
@@ -111,8 +146,8 @@
             </CollectionView>
         </RefreshView>
 
-        <!-- Row 4: Add button -->
-        <Button Grid.Row="4" Text="+ Add Recipe"
+        <!-- Row 5: Add button -->
+        <Button Grid.Row="5" Text="+ Add Recipe"
                 Command="{Binding GoToAddRecipeCommand}"
                 BackgroundColor="#4CAF50"
                 TextColor="White"

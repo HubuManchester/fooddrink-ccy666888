@@ -4,7 +4,7 @@ namespace TasteHub.Views
 {
     /// <summary>
     /// Home page displaying recipe list with search, filtering,
-    /// barometer recommendation and shake-to-earn coupon
+    /// barometer recommendation, compass surprise wheel and shake-to-earn coupon
     /// </summary>
     public partial class HomePage : ContentPage
     {
@@ -31,6 +31,7 @@ namespace TasteHub.Views
             await _viewModel.LoadRecipesAsync();
             StartBarometer();
             StartShakeDetection();
+            StartCompass();
         }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace TasteHub.Views
             base.OnDisappearing();
             StopBarometer();
             StopShakeDetection();
+            StopCompass();
         }
 
         /// <summary>Set category filter to All and reload</summary>
@@ -159,28 +161,95 @@ namespace TasteHub.Views
         /// </summary>
         private void OnAccelerometerForShake(object sender, AccelerometerChangedEventArgs e)
         {
-            double x = e.Reading.Acceleration.X;
-            double y = e.Reading.Acceleration.Y;
-            double z = e.Reading.Acceleration.Z;
-
-            if (_shakeInitialized)
+            try
             {
-                double force = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
+                double x = e.Reading.Acceleration.X;
+                double y = e.Reading.Acceleration.Y;
+                double z = e.Reading.Acceleration.Z;
 
-                if (force > 2.5 && (DateTime.Now - _lastShakeTime).TotalSeconds > 3)
+                if (_shakeInitialized)
                 {
-                    _lastShakeTime = DateTime.Now;
-                    MainThread.BeginInvokeOnMainThread(async () =>
+                    double force = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
+
+                    if (force > 2.5 && (DateTime.Now - _lastShakeTime).TotalSeconds > 3)
                     {
-                        await _viewModel.ShakeDetectedAsync();
-                    });
+                        _lastShakeTime = DateTime.Now;
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await _viewModel.ShakeDetectedAsync();
+                        });
+                    }
+                }
+
+                _lastX = x;
+                _lastY = y;
+                _lastZ = z;
+                _shakeInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Shake detection error: {ex.Message}");
+            }
+        }
+
+        // ==================== Compass Hardware ====================
+
+        /// <summary>
+        /// Start monitoring the compass sensor for the Surprise Me feature.
+        /// The compass heading drives the wheel rotation in real-time.
+        /// </summary>
+        private void StartCompass()
+        {
+            try
+            {
+                if (Compass.Default.IsSupported && !Compass.Default.IsMonitoring)
+                {
+                    Compass.Default.ReadingChanged += OnCompassReadingChanged;
+                    Compass.Default.Start(SensorSpeed.UI);
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Compass start error: {ex.Message}");
+            }
+        }
 
-            _lastX = x;
-            _lastY = y;
-            _lastZ = z;
-            _shakeInitialized = true;
+        /// <summary>
+        /// Stop the compass sensor
+        /// </summary>
+        private void StopCompass()
+        {
+            try
+            {
+                if (Compass.Default.IsSupported && Compass.Default.IsMonitoring)
+                {
+                    Compass.Default.ReadingChanged -= OnCompassReadingChanged;
+                    Compass.Default.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Compass stop error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handle compass reading changes and update the heading value.
+        /// The heading is used to rotate the surprise wheel and select a recipe.
+        /// </summary>
+        private void OnCompassReadingChanged(object sender, CompassChangedEventArgs e)
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    _viewModel.CompassHeading = e.Reading.HeadingMagneticNorth;
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Compass reading error: {ex.Message}");
+            }
         }
     }
 }

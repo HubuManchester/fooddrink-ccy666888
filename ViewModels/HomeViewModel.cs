@@ -11,12 +11,14 @@ namespace TasteHub.ViewModels
 {
     /// <summary>
     /// View model for the Home page, handling recipe listing, search,
-    /// category filtering, barometer recommendation and shake-to-earn coupon
+    /// category filtering, barometer recommendation, compass surprise wheel
+    /// and shake-to-earn coupon
     /// </summary>
     public partial class HomeViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
         private bool _isLoading = false;
+        private bool _barometerInitialized = false;
 
         /// <summary>Full collection of recipes displayed in the list</summary>
         public ObservableCollection<Recipe> Recipes { get; } = new();
@@ -45,6 +47,24 @@ namespace TasteHub.ViewModels
         [ObservableProperty]
         private double _currentPressure;
 
+        // ==================== Compass (Surprise Me) ====================
+
+        /// <summary>Current compass heading in degrees (0-360)</summary>
+        [ObservableProperty]
+        private double _compassHeading;
+
+        /// <summary>Whether the surprise wheel is currently spinning</summary>
+        [ObservableProperty]
+        private bool _isSpinning;
+
+        /// <summary>Recipe selected by the compass wheel</summary>
+        [ObservableProperty]
+        private Recipe _surpriseRecipe;
+
+        /// <summary>Whether to show the surprise result popup</summary>
+        [ObservableProperty]
+        private bool _showSurpriseResult;
+
         /// <summary>
         /// Constructor with dependency injection of database service
         /// </summary>
@@ -71,13 +91,11 @@ namespace TasteHub.ViewModels
 
                 var recipes = await _databaseService.GetAllRecipesAsync();
 
-                // Apply category filter
                 if (SelectedCategory != "All")
                 {
                     recipes = recipes.Where(r => r.Category == SelectedCategory).ToList();
                 }
 
-                // Apply search filter
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
                     string query = SearchText.ToLower();
@@ -213,20 +231,22 @@ namespace TasteHub.ViewModels
 
         /// <summary>
         /// Recommend a recipe based on barometer pressure reading.
+        /// Only updates once to avoid constant jumping between recipes.
         /// Low pressure suggests warm food/drinks, high pressure suggests cold ones.
         /// </summary>
         [RelayCommand]
         public async Task UpdateBarometerRecommendationAsync(double pressure)
         {
+            if (_barometerInitialized) return;
+
             try
             {
                 CurrentPressure = pressure;
-                var allRecipes = await _databaseService.GetAllRecipesAsync();
+                _barometerInitialized = true;
 
+                var allRecipes = await _databaseService.GetAllRecipesAsync();
                 if (allRecipes.Count == 0) return;
 
-                // Low pressure (< 1013 hPa) -> recommend hot items
-                // High pressure (>= 1013 hPa) -> recommend cold items
                 var filtered = pressure < 1013
                     ? allRecipes.Where(r =>
                         r.SubCategory == "Dinner" ||
@@ -250,6 +270,57 @@ namespace TasteHub.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Barometer recommendation error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Start the compass-driven surprise wheel.
+        /// Reads the device compass heading for 3 seconds while showing
+        /// a spinning wheel animation, then uses the final heading angle
+        /// to select a recipe from the full list.
+        /// </summary>
+        [RelayCommand]
+        public async Task SurpriseMeAsync()
+        {
+            try
+            {
+                var allRecipes = await _databaseService.GetAllRecipesAsync();
+                if (allRecipes.Count == 0)
+                {
+                    await Shell.Current.DisplayAlert("No Recipes",
+                        "Add some recipes first!", "OK");
+                    return;
+                }
+
+                IsSpinning = true;
+
+                // Wait 3 seconds while compass heading updates via sensor
+                await Task.Delay(3000);
+
+                IsSpinning = false;
+
+                // Use the current compass heading to pick a recipe
+                int index = (int)(CompassHeading % allRecipes.Count);
+                SurpriseRecipe = allRecipes[index];
+                ShowSurpriseResult = true;
+
+                bool viewRecipe = await Shell.Current.DisplayAlert("Surprise!",
+                    $"The compass chose:\n\n{SurpriseRecipe.Name}\n({SurpriseRecipe.SubCategory})\n\nWould you like to view it?",
+                    "View Recipe", "Close");
+
+                ShowSurpriseResult = false;
+
+                if (viewRecipe)
+                {
+                    await GoToDetailAsync(SurpriseRecipe);
+                }
+            }
+            catch (Exception ex)
+            {
+                IsSpinning = false;
+                await Shell.Current.DisplayAlert("Error",
+                    "Compass is not available on this device.", "OK");
+                System.Diagnostics.Debug.WriteLine($"SurpriseMe error: {ex.Message}");
             }
         }
     }

@@ -99,7 +99,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Steps with TTS -->
+            <!-- Steps with TTS button -->
             <Frame CornerRadius="12" Padding="15"
                    BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#283593}">
                 <VerticalStackLayout Spacing="8">
@@ -109,9 +109,10 @@
                                FontSize="{DynamicResource AppFontSize}"
                                SemanticProperties.HeadingLevel="Level2"/>
                         <Button Grid.Column="1"
-                                Text="{Binding IsReading, Converter={StaticResource BoolToTTSTextConverter}}"
-                                Command="{Binding ReadStepsAloudCommand}"
-                                SemanticProperties.Hint="Read cooking steps aloud"/>
+                                x:Name="TtsButton"
+                                Text="🔊 Read Aloud"
+                                Clicked="OnTtsButtonClicked"
+                                SemanticProperties.Hint="Read cooking steps aloud using text-to-speech"/>
                     </Grid>
                     <CollectionView ItemsSource="{Binding StepsList}">
                         <CollectionView.ItemTemplate>

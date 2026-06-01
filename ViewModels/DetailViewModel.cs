@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using TasteHub.Models;
 using TasteHub.Services;
@@ -11,14 +10,13 @@ using TasteHub.Services;
 namespace TasteHub.ViewModels
 {
     /// <summary>
-    /// View model for the Detail page, displaying full recipe information
-    /// with text-to-speech step-by-step reading
+    /// View model for the Detail page, displaying full recipe information.
+    /// TTS is handled in DetailPage.xaml.cs for direct Android native control.
     /// </summary>
     [QueryProperty(nameof(RecipeId), "id")]
     public partial class DetailViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
-        private CancellationTokenSource _ttsCancellation;
 
         /// <summary>Recipe ID passed via navigation query</summary>
         [ObservableProperty]
@@ -87,32 +85,26 @@ namespace TasteHub.ViewModels
                 Recipe = recipe;
                 Title = recipe.Name;
 
-                // Parse ingredients from JSON string
                 IngredientsList.Clear();
                 try
                 {
                     var ingredients = JsonSerializer.Deserialize<string[]>(recipe.Ingredients);
                     if (ingredients != null)
-                    {
                         foreach (var item in ingredients)
                             IngredientsList.Add(item);
-                    }
                 }
                 catch (JsonException)
                 {
                     IngredientsList.Add("Unable to load ingredients");
                 }
 
-                // Parse steps from JSON string
                 StepsList.Clear();
                 try
                 {
                     var steps = JsonSerializer.Deserialize<string[]>(recipe.Steps);
                     if (steps != null)
-                    {
                         foreach (var step in steps)
                             StepsList.Add(step);
-                    }
                 }
                 catch (JsonException)
                 {
@@ -128,65 +120,6 @@ namespace TasteHub.ViewModels
             finally
             {
                 IsBusy = false;
-            }
-        }
-
-        /// <summary>
-        /// Read all cooking steps aloud using text-to-speech,
-        /// highlighting the current step visually.
-        /// Supports cancellation when user taps Stop.
-        /// </summary>
-        [RelayCommand]
-        public async Task ReadStepsAloudAsync()
-        {
-            if (IsReading)
-            {
-                // Stop reading
-                IsReading = false;
-                CurrentReadingStep = -1;
-                _ttsCancellation?.Cancel();
-                return;
-            }
-
-            try
-            {
-                IsReading = true;
-                _ttsCancellation = new CancellationTokenSource();
-
-                for (int i = 0; i < StepsList.Count; i++)
-                {
-                    if (!IsReading) break;
-
-                    CurrentReadingStep = i;
-
-                    var settings = new SpeechOptions
-                    {
-                        Pitch = 1.0f,
-                        Volume = 1.0f
-                    };
-
-                    await TextToSpeech.Default.SpeakAsync(
-                        $"Step {i + 1}: {StepsList[i]}", settings,
-                        _ttsCancellation.Token);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // TTS was cancelled by user, this is expected
-                System.Diagnostics.Debug.WriteLine("TTS cancelled by user");
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Error",
-                    "Text-to-speech is not available on this device.", "OK");
-                System.Diagnostics.Debug.WriteLine($"TTS error: {ex.Message}");
-            }
-            finally
-            {
-                IsReading = false;
-                CurrentReadingStep = -1;
-                _ttsCancellation?.Dispose();
-                _ttsCancellation = null;
             }
         }
 

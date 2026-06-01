@@ -30,6 +30,7 @@
 	<ItemGroup>
 	  <Compile Remove="Platforms\Android\SpeechRecognitionListener.cs" />
 	  <Compile Remove="Services\SpeechService.cs" />
+	  <Compile Remove="Services\TtsService.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

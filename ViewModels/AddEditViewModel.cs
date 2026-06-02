@@ -506,6 +506,7 @@ namespace TasteHub.ViewModels
         {
             bool isValid = true;
 
+            // Validate recipe name
             if (string.IsNullOrWhiteSpace(RecipeName))
             {
                 NameError = "Recipe name is required.";
@@ -521,6 +522,7 @@ namespace TasteHub.ViewModels
                 NameError = string.Empty;
             }
 
+            // Validate category
             if (string.IsNullOrWhiteSpace(SelectedCategory))
             {
                 CategoryError = "Please select a category.";
@@ -531,28 +533,65 @@ namespace TasteHub.ViewModels
                 CategoryError = string.Empty;
             }
 
+            // Validate nutrition fields (must be valid, non-negative numbers within range)
             NutritionError = string.Empty;
-            if (!string.IsNullOrWhiteSpace(CaloriesText) && !double.TryParse(CaloriesText, out _))
+            if (!string.IsNullOrWhiteSpace(CaloriesText))
             {
-                NutritionError = "Calories must be a valid number.";
-                isValid = false;
-            }
-            else if (!string.IsNullOrWhiteSpace(ProteinText) && !double.TryParse(ProteinText, out _))
-            {
-                NutritionError = "Protein must be a valid number.";
-                isValid = false;
-            }
-            else if (!string.IsNullOrWhiteSpace(CarbsText) && !double.TryParse(CarbsText, out _))
-            {
-                NutritionError = "Carbs must be a valid number.";
-                isValid = false;
-            }
-            else if (!string.IsNullOrWhiteSpace(FatText) && !double.TryParse(FatText, out _))
-            {
-                NutritionError = "Fat must be a valid number.";
-                isValid = false;
+                if (!double.TryParse(CaloriesText, out double calVal))
+                {
+                    NutritionError = "Calories must be a valid number.";
+                    isValid = false;
+                }
+                else if (calVal < 0 || calVal > 10000)
+                {
+                    NutritionError = "Calories must be between 0 and 10000.";
+                    isValid = false;
+                }
             }
 
+            if (string.IsNullOrEmpty(NutritionError) && !string.IsNullOrWhiteSpace(ProteinText))
+            {
+                if (!double.TryParse(ProteinText, out double proVal))
+                {
+                    NutritionError = "Protein must be a valid number.";
+                    isValid = false;
+                }
+                else if (proVal < 0 || proVal > 1000)
+                {
+                    NutritionError = "Protein must be between 0 and 1000g.";
+                    isValid = false;
+                }
+            }
+
+            if (string.IsNullOrEmpty(NutritionError) && !string.IsNullOrWhiteSpace(CarbsText))
+            {
+                if (!double.TryParse(CarbsText, out double carbVal))
+                {
+                    NutritionError = "Carbs must be a valid number.";
+                    isValid = false;
+                }
+                else if (carbVal < 0 || carbVal > 1000)
+                {
+                    NutritionError = "Carbs must be between 0 and 1000g.";
+                    isValid = false;
+                }
+            }
+
+            if (string.IsNullOrEmpty(NutritionError) && !string.IsNullOrWhiteSpace(FatText))
+            {
+                if (!double.TryParse(FatText, out double fatVal))
+                {
+                    NutritionError = "Fat must be a valid number.";
+                    isValid = false;
+                }
+                else if (fatVal < 0 || fatVal > 1000)
+                {
+                    NutritionError = "Fat must be between 0 and 1000g.";
+                    isValid = false;
+                }
+            }
+
+            // Validate ingredients
             if (Ingredients.Count == 0)
             {
                 IngredientsError = "Please add at least one ingredient.";
@@ -563,6 +602,7 @@ namespace TasteHub.ViewModels
                 IngredientsError = string.Empty;
             }
 
+            // Validate steps
             if (Steps.Count == 0)
             {
                 StepsError = "Please add at least one step.";

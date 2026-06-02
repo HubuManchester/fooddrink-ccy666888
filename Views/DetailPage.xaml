@@ -10,15 +10,52 @@
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="15">
 
-            <!-- Cover image with pinch-to-zoom -->
-            <Frame CornerRadius="12" Padding="0" IsClippedToBounds="True" HeightRequest="220">
-                <Image Source="{Binding Recipe.ImagePath}"
-                       Aspect="AspectFill"
-                       Scale="{Binding ImageScale}">
-                    <Image.GestureRecognizers>
-                        <PinchGestureRecognizer PinchUpdated="OnPinchUpdated"/>
-                    </Image.GestureRecognizers>
-                </Image>
+            <!-- Cover image with zoom: double-tap gesture + zoom buttons -->
+            <Frame CornerRadius="12" Padding="0" HeightRequest="300"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                   SemanticProperties.Description="Recipe cover image, double-tap or use buttons to zoom">
+                <Grid>
+                    <Image Source="{Binding Recipe.ImagePath}"
+                           Aspect="AspectFit"
+                           x:Name="RecipeImage"
+                           HeightRequest="300">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                  Tapped="OnImageDoubleTapped"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                    <!-- Zoom buttons overlay -->
+                    <HorizontalStackLayout
+                        VerticalOptions="End"
+                        HorizontalOptions="End"
+                        Spacing="5"
+                        Padding="10">
+                        <Button Text="➖"
+                                WidthRequest="40" HeightRequest="40"
+                                FontSize="16"
+                                Clicked="OnZoomOutClicked"
+                                BackgroundColor="#80000000"
+                                TextColor="White"
+                                CornerRadius="20"
+                                SemanticProperties.Hint="Zoom out the recipe image"/>
+                        <Button Text="➕"
+                                WidthRequest="40" HeightRequest="40"
+                                FontSize="16"
+                                Clicked="OnZoomInClicked"
+                                BackgroundColor="#80000000"
+                                TextColor="White"
+                                CornerRadius="20"
+                                SemanticProperties.Hint="Zoom in the recipe image"/>
+                        <Button Text="↺"
+                                WidthRequest="40" HeightRequest="40"
+                                FontSize="16"
+                                Clicked="OnZoomResetClicked"
+                                BackgroundColor="#80000000"
+                                TextColor="White"
+                                CornerRadius="20"
+                                SemanticProperties.Hint="Reset image zoom to original size"/>
+                    </HorizontalStackLayout>
+                </Grid>
             </Frame>
 
             <!-- Name and category -->

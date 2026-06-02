@@ -3,8 +3,8 @@
 namespace TasteHub.Views
 {
     /// <summary>
-    /// Detail page showing full recipe information with TTS and pinch-to-zoom.
-    /// TTS uses Android native engine directly for reliable stop support.
+    /// Detail page showing full recipe information with TTS, 
+    /// double-tap zoom gesture and zoom buttons.
     /// </summary>
     public partial class DetailPage : ContentPage
     {
@@ -25,7 +25,6 @@ namespace TasteHub.Views
             _viewModel = viewModel;
 
 #if ANDROID
-            // Initialise Android native TTS engine
             _tts = new Android.Speech.Tts.TextToSpeech(
                 Android.App.Application.Context,
                 new TtsInitListener(this));
@@ -90,21 +89,95 @@ namespace TasteHub.Views
             StopSpeaking();
         }
 
+        // ==================== Image Zoom ====================
+
+        /// <summary>
+        /// Handle double-tap gesture on the recipe image.
+        /// Toggles between 1x (original) and 2.5x (zoomed) scale.
+        /// Provides a quick gesture-based zoom alternative to buttons.
+        /// </summary>
+        private void OnImageDoubleTapped(object sender, TappedEventArgs e)
+        {
+            try
+            {
+                if (_currentScale > 1.0)
+                {
+                    _currentScale = 1.0;
+                }
+                else
+                {
+                    _currentScale = 2.5;
+                }
+                RecipeImage.Scale = _currentScale;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"DoubleTap zoom error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Zoom in the recipe image by 0.5x, maximum 4x
+        /// </summary>
+        private void OnZoomInClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                _currentScale = Math.Min(_currentScale + 0.5, 4.0);
+                RecipeImage.Scale = _currentScale;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ZoomIn error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Zoom out the recipe image by 0.5x, minimum 1x
+        /// </summary>
+        private void OnZoomOutClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                _currentScale = Math.Max(_currentScale - 0.5, 1.0);
+                RecipeImage.Scale = _currentScale;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ZoomOut error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reset the recipe image zoom to original 1x scale
+        /// </summary>
+        private void OnZoomResetClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                _currentScale = 1.0;
+                RecipeImage.Scale = _currentScale;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ZoomReset error: {ex.Message}");
+            }
+        }
+
+        // ==================== Text-to-Speech ====================
+
         /// <summary>
         /// Handle TTS button click.
-        /// If not speaking: start reading all steps one by one.
+        /// If not speaking: start reading all steps.
         /// If speaking: stop immediately.
         /// </summary>
         private async void OnTtsButtonClicked(object sender, EventArgs e)
         {
             if (_isSpeaking)
             {
-                // STOP immediately
                 StopSpeaking();
                 return;
             }
-
-            // START reading steps
             await StartReadingSteps();
         }
 
@@ -119,24 +192,12 @@ namespace TasteHub.Views
             TtsButton.Text = "🔊 Read Aloud";
 
 #if ANDROID
-            try
-            {
-                if (_tts != null)
-                {
-                    _tts.Stop();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"TTS stop error: {ex.Message}");
-            }
+            try { _tts?.Stop(); } catch { }
 #endif
         }
 
         /// <summary>
-        /// Read all steps sequentially using Android native TTS.
-        /// Polls IsSpeaking to wait for each step to finish.
-        /// Checks _isSpeaking flag to allow immediate cancellation.
+        /// Read all steps using Android native TTS with polling for stop support
         /// </summary>
         private async Task StartReadingSteps()
         {
@@ -146,8 +207,7 @@ namespace TasteHub.Views
 #if ANDROID
             if (!_ttsReady || _tts == null)
             {
-                await DisplayAlert("Error",
-                    "Text-to-speech is not ready. Please try again.", "OK");
+                await DisplayAlert("Error", "Text-to-speech is not ready.", "OK");
                 return;
             }
 #endif
@@ -160,46 +220,29 @@ namespace TasteHub.Views
             {
                 for (int i = 0; i < steps.Count; i++)
                 {
-                    // Check if user pressed Stop
                     if (!_isSpeaking) break;
-
                     _viewModel.CurrentReadingStep = i;
                     string text = $"Step {i + 1}: {steps[i]}";
 
 #if ANDROID
-                    // Speak using native Android TTS (non-blocking)
-                    _tts.Speak(text,
-                        Android.Speech.Tts.QueueMode.Flush,
-                        null, $"step_{i}");
-
-                    // Wait a moment for speech to start
+                    _tts.Speak(text, Android.Speech.Tts.QueueMode.Flush, null, $"step_{i}");
                     await Task.Delay(200);
-
-                    // Poll until this step finishes speaking or user stops
                     while (_tts.IsSpeaking)
                     {
-                        if (!_isSpeaking)
-                        {
-                            _tts.Stop();
-                            break;
-                        }
+                        if (!_isSpeaking) { _tts.Stop(); break; }
                         await Task.Delay(50);
                     }
 #else
                     await TextToSpeech.Default.SpeakAsync(text);
 #endif
 
-                    // Check again after speech completes
                     if (!_isSpeaking) break;
-
-                    // Small pause between steps
                     await Task.Delay(300);
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error",
-                    "Text-to-speech failed. Please try again.", "OK");
+                await DisplayAlert("Error", "Text-to-speech failed.", "OK");
                 System.Diagnostics.Debug.WriteLine($"TTS error: {ex.Message}");
             }
             finally
@@ -211,52 +254,23 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Handle pinch gesture to zoom the recipe cover image
-        /// </summary>
-        private void OnPinchUpdated(object sender, PinchGestureUpdatedEventArgs e)
-        {
-            try
-            {
-                switch (e.Status)
-                {
-                    case GestureStatus.Started:
-                        _startScale = _currentScale;
-                        break;
-                    case GestureStatus.Running:
-                        _currentScale = Math.Clamp(_startScale * e.Scale, 1.0, 4.0);
-                        if (sender is Image image)
-                        {
-                            image.Scale = _currentScale;
-                        }
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"PinchGesture error: {ex.Message}");
-            }
-        }
+        // ==================== Navigation ====================
 
         /// <summary>
-        /// Navigate to interactive cooking page with recipe info
+        /// Navigate to interactive cooking page
         /// </summary>
         private async void OnCookClicked(object sender, EventArgs e)
         {
             try
             {
                 if (_viewModel.Recipe == null) return;
-
-                // Stop TTS before navigating away
                 StopSpeaking();
-
                 await Shell.Current.GoToAsync(
                     $"InteractivePage?name={Uri.EscapeDataString(_viewModel.Recipe.Name)}&category={_viewModel.Recipe.Category}");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error",
-                    "Failed to open interactive cooking mode. Please try again.", "OK");
+                await DisplayAlert("Error", "Failed to open interactive cooking mode.", "OK");
                 System.Diagnostics.Debug.WriteLine($"OnCookClicked error: {ex.Message}");
             }
         }

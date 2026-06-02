@@ -84,6 +84,12 @@
                             BackgroundColor="#607D8B"
                             TextColor="White"/>
                 </Grid>
+                <Button Text="🔍 Scan Food with AI"
+        Command="{Binding ScanFoodCommand}"
+        BackgroundColor="#9C27B0"
+        TextColor="White"
+        FontAttributes="Bold"
+        SemanticProperties.Hint="Take a photo and use AI to recognise the food and auto-fill nutritional information"/>
             </VerticalStackLayout>
 
             <!-- Nutrition -->

@@ -11,7 +11,7 @@ namespace TasteHub.ViewModels
 {
     /// <summary>
     /// View model for the Add/Edit page, handling recipe creation and modification
-    /// with camera integration for cover photos
+    /// with camera integration and AI food recognition
     /// </summary>
     [QueryProperty(nameof(RecipeId), "id")]
     public partial class AddEditViewModel : BaseViewModel
@@ -28,83 +28,60 @@ namespace TasteHub.ViewModels
 
         // ==================== Form Fields ====================
 
-        /// <summary>Recipe name input</summary>
         [ObservableProperty]
         private string _recipeName = string.Empty;
 
-        /// <summary>Selected main category: Food or Drink</summary>
         [ObservableProperty]
         private string _selectedCategory = "Food";
 
-        /// <summary>Selected sub-category</summary>
         [ObservableProperty]
         private string _selectedSubCategory = string.Empty;
 
-        /// <summary>Recipe description input</summary>
         [ObservableProperty]
         private string _description = string.Empty;
 
-        /// <summary>Cover image file path</summary>
         [ObservableProperty]
         private string _imagePath = string.Empty;
 
-        /// <summary>Calories input</summary>
         [ObservableProperty]
         private string _caloriesText = string.Empty;
 
-        /// <summary>Protein input</summary>
         [ObservableProperty]
         private string _proteinText = string.Empty;
 
-        /// <summary>Carbohydrates input</summary>
         [ObservableProperty]
         private string _carbsText = string.Empty;
 
-        /// <summary>Fat input</summary>
         [ObservableProperty]
         private string _fatText = string.Empty;
 
         // ==================== Validation Error Messages ====================
 
-        /// <summary>Validation error for recipe name</summary>
         [ObservableProperty]
         private string _nameError = string.Empty;
 
-        /// <summary>Validation error for category</summary>
         [ObservableProperty]
         private string _categoryError = string.Empty;
 
-        /// <summary>Validation error for nutrition fields</summary>
         [ObservableProperty]
         private string _nutritionError = string.Empty;
 
-        /// <summary>Validation error for ingredients</summary>
         [ObservableProperty]
         private string _ingredientsError = string.Empty;
 
-        /// <summary>Validation error for steps</summary>
         [ObservableProperty]
         private string _stepsError = string.Empty;
 
         // ==================== Collections ====================
 
-        /// <summary>List of ingredients the user has added</summary>
         public ObservableCollection<string> Ingredients { get; } = new();
-
-        /// <summary>List of cooking steps the user has added</summary>
         public ObservableCollection<string> Steps { get; } = new();
-
-        /// <summary>Available main categories</summary>
         public ObservableCollection<string> Categories { get; } = new() { "Food", "Drink" };
-
-        /// <summary>Available sub-categories, changes based on selected main category</summary>
         public ObservableCollection<string> SubCategories { get; } = new();
 
-        /// <summary>New ingredient text input</summary>
         [ObservableProperty]
         private string _newIngredient = string.Empty;
 
-        /// <summary>New step text input</summary>
         [ObservableProperty]
         private string _newStep = string.Empty;
 
@@ -118,9 +95,6 @@ namespace TasteHub.ViewModels
             UpdateSubCategories();
         }
 
-        /// <summary>
-        /// Load existing recipe data when RecipeId is set (edit mode)
-        /// </summary>
         partial void OnRecipeIdChanged(int value)
         {
             if (value != 0)
@@ -131,17 +105,11 @@ namespace TasteHub.ViewModels
             }
         }
 
-        /// <summary>
-        /// Update sub-category options when main category changes
-        /// </summary>
         partial void OnSelectedCategoryChanged(string value)
         {
             UpdateSubCategories();
         }
 
-        /// <summary>
-        /// Populate sub-category list based on the selected main category
-        /// </summary>
         private void UpdateSubCategories()
         {
             SubCategories.Clear();
@@ -167,9 +135,6 @@ namespace TasteHub.ViewModels
             }
         }
 
-        /// <summary>
-        /// Load recipe data from database for editing
-        /// </summary>
         private async Task LoadRecipeAsync()
         {
             try
@@ -179,8 +144,7 @@ namespace TasteHub.ViewModels
 
                 if (recipe == null)
                 {
-                    await Shell.Current.DisplayAlert("Error",
-                        "Recipe not found.", "OK");
+                    await Shell.Current.DisplayAlert("Error", "Recipe not found.", "OK");
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -195,7 +159,6 @@ namespace TasteHub.ViewModels
                 CarbsText = recipe.Carbs.ToString();
                 FatText = recipe.Fat.ToString();
 
-                // Parse ingredients
                 Ingredients.Clear();
                 try
                 {
@@ -206,7 +169,6 @@ namespace TasteHub.ViewModels
                 }
                 catch (JsonException) { }
 
-                // Parse steps
                 Steps.Clear();
                 try
                 {
@@ -219,8 +181,7 @@ namespace TasteHub.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error",
-                    "Failed to load recipe. Please try again.", "OK");
+                await Shell.Current.DisplayAlert("Error", "Failed to load recipe.", "OK");
                 System.Diagnostics.Debug.WriteLine($"LoadRecipe error: {ex.Message}");
             }
             finally
@@ -229,9 +190,6 @@ namespace TasteHub.ViewModels
             }
         }
 
-        /// <summary>
-        /// Add a new ingredient to the list
-        /// </summary>
         [RelayCommand]
         public void AddIngredient()
         {
@@ -240,24 +198,17 @@ namespace TasteHub.ViewModels
                 IngredientsError = "Please enter an ingredient.";
                 return;
             }
-
             Ingredients.Add(NewIngredient.Trim());
             NewIngredient = string.Empty;
             IngredientsError = string.Empty;
         }
 
-        /// <summary>
-        /// Remove an ingredient from the list
-        /// </summary>
         [RelayCommand]
         public void RemoveIngredient(string ingredient)
         {
             Ingredients.Remove(ingredient);
         }
 
-        /// <summary>
-        /// Add a new cooking step to the list
-        /// </summary>
         [RelayCommand]
         public void AddStep()
         {
@@ -266,15 +217,11 @@ namespace TasteHub.ViewModels
                 StepsError = "Please enter a step.";
                 return;
             }
-
             Steps.Add(NewStep.Trim());
             NewStep = string.Empty;
             StepsError = string.Empty;
         }
 
-        /// <summary>
-        /// Remove a cooking step from the list
-        /// </summary>
         [RelayCommand]
         public void RemoveStep(string step)
         {
@@ -282,17 +229,14 @@ namespace TasteHub.ViewModels
         }
 
         /// <summary>
-        /// Take a photo using the device camera for the recipe cover image.
-        /// Uses Android native camera intent with CameraService to handle
-        /// the activity result and automatically save the photo.
-        /// Compatible with HarmonyOS devices.
+        /// Take a photo using camera with HarmonyOS compatibility.
+        /// Uses CameraService to handle native Android camera intent result.
         /// </summary>
         [RelayCommand]
         public async Task TakePhotoAsync()
         {
             try
             {
-                // Request camera permission
                 var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
                 if (cameraStatus != PermissionStatus.Granted)
                 {
@@ -308,29 +252,22 @@ namespace TasteHub.ViewModels
 #if ANDROID
                 try
                 {
-                    // Start waiting for photo result before launching camera
                     var photoTask = CameraService.WaitForPhotoAsync();
-
-                    // Launch camera intent directly (no FileProvider needed)
                     var intent = new Android.Content.Intent(
                         Android.Provider.MediaStore.ActionImageCapture);
                     Platform.CurrentActivity.StartActivityForResult(intent, 1002);
-
-                    // Wait for camera to return the photo via OnActivityResult
                     string photoPath = await photoTask;
 
                     if (!string.IsNullOrEmpty(photoPath))
                     {
                         ImagePath = photoPath;
-                        await Shell.Current.DisplayAlert("Success",
-                            "Photo captured and saved!", "OK");
                     }
                 }
                 catch (Exception camEx)
                 {
                     System.Diagnostics.Debug.WriteLine($"Camera error: {camEx.Message}");
                     await Shell.Current.DisplayAlert("Camera Error",
-                        $"Camera failed: {camEx.Message}\nPlease use Pick from Gallery.", "OK");
+                        "Please use Pick from Gallery instead.", "OK");
                 }
 #else
                 try
@@ -355,14 +292,13 @@ namespace TasteHub.ViewModels
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error",
-                    "Failed to access camera. Please try again.", "OK");
+                    "Failed to access camera.", "OK");
                 System.Diagnostics.Debug.WriteLine($"TakePhoto error: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Pick an existing photo from the device gallery.
-        /// Requests storage permission at runtime before attempting pick.
+        /// Pick a photo from the device gallery
         /// </summary>
         [RelayCommand]
         public async Task PickPhotoAsync()
@@ -371,9 +307,7 @@ namespace TasteHub.ViewModels
             {
                 var storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
                 if (storageStatus != PermissionStatus.Granted)
-                {
                     storageStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
-                }
 
                 var photo = await MediaPicker.Default.PickPhotoAsync();
                 if (photo != null)
@@ -388,14 +322,186 @@ namespace TasteHub.ViewModels
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error",
-                    "Failed to pick photo. Please try again.", "OK");
+                    "Failed to pick photo.", "OK");
                 System.Diagnostics.Debug.WriteLine($"PickPhoto error: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Validate all form fields and return true if valid
+        /// Scan food using camera and AI recognition.
+        /// 1. Takes/picks a photo
+        /// 2. Sends to LogMeal deep learning API for dish identification
+        /// 3. Fetches nutritional info from LogMeal AI
+        /// 4. Fetches recipe details from TheMealDB API
+        /// 5. Auto-fills ALL form fields: name, category, description,
+        ///    nutrition, ingredients and steps
         /// </summary>
+        [RelayCommand]
+        public async Task ScanFoodAsync()
+        {
+            try
+            {
+                // Request camera permission
+                var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (cameraStatus != PermissionStatus.Granted)
+                {
+                    cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+                    if (cameraStatus != PermissionStatus.Granted)
+                    {
+                        await Shell.Current.DisplayAlert("Permission Denied",
+                            "Camera permission is required to scan food.", "OK");
+                        return;
+                    }
+                }
+
+                // Get image: try camera first, then gallery
+                string imagePath = null;
+
+#if ANDROID
+                try
+                {
+                    var photoTask = CameraService.WaitForPhotoAsync();
+                    var intent = new Android.Content.Intent(
+                        Android.Provider.MediaStore.ActionImageCapture);
+                    Platform.CurrentActivity.StartActivityForResult(intent, 1002);
+                    imagePath = await photoTask;
+                }
+                catch
+                {
+                    // Camera failed, will try gallery below
+                }
+#endif
+
+                // Fallback to gallery
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    try
+                    {
+                        var photo = await MediaPicker.Default.PickPhotoAsync();
+                        if (photo != null)
+                        {
+                            imagePath = Path.Combine(FileSystem.AppDataDirectory, photo.FileName);
+                            using var stream = await photo.OpenReadAsync();
+                            using var newStream = File.OpenWrite(imagePath);
+                            await stream.CopyToAsync(newStream);
+                        }
+                    }
+                    catch { }
+                }
+
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    await Shell.Current.DisplayAlert("No Image",
+                        "Please take or select a food photo.", "OK");
+                    return;
+                }
+
+                // Set image preview
+                ImagePath = imagePath;
+
+                // Show loading message
+                IsBusy = true;
+                await Shell.Current.DisplayAlert("Scanning...",
+                    "Analysing food image with AI.\nThis may take a few seconds.", "OK");
+
+                // Call food recognition service (LogMeal + TheMealDB)
+                var recognitionService = new FoodRecognitionService();
+                var result = await recognitionService.RecogniseFoodAsync(imagePath);
+
+                IsBusy = false;
+
+                if (result.Success)
+                {
+                    // ===== Auto-fill name =====
+                    RecipeName = result.Name;
+
+                    // ===== Auto-fill category =====
+                    SelectedCategory = result.Category;
+                    // Wait for SubCategories to update
+                    await Task.Delay(100);
+                    if (!string.IsNullOrEmpty(result.SubCategory))
+                    {
+                        SelectedSubCategory = result.SubCategory;
+                    }
+
+                    // ===== Auto-fill description =====
+                    if (!string.IsNullOrEmpty(result.Description))
+                    {
+                        Description = result.Description;
+                    }
+
+                    // ===== Auto-fill nutrition =====
+                    CaloriesText = result.Calories > 0 ? result.Calories.ToString("F0") : "";
+                    ProteinText = result.Protein > 0 ? result.Protein.ToString("F1") : "";
+                    CarbsText = result.Carbs > 0 ? result.Carbs.ToString("F1") : "";
+                    FatText = result.Fat > 0 ? result.Fat.ToString("F1") : "";
+
+                    // ===== Auto-fill ingredients =====
+                    Ingredients.Clear();
+                    if (result.Ingredients != null && result.Ingredients.Length > 0)
+                    {
+                        foreach (var ingredient in result.Ingredients)
+                        {
+                            if (!string.IsNullOrWhiteSpace(ingredient))
+                            {
+                                Ingredients.Add(ingredient);
+                            }
+                        }
+                    }
+                    IngredientsError = string.Empty;
+
+                    // ===== Auto-fill steps =====
+                    Steps.Clear();
+                    if (result.Steps != null && result.Steps.Length > 0)
+                    {
+                        foreach (var step in result.Steps)
+                        {
+                            if (!string.IsNullOrWhiteSpace(step))
+                            {
+                                Steps.Add(step);
+                            }
+                        }
+                    }
+                    StepsError = string.Empty;
+
+                    // Show summary
+                    int ingredientCount = Ingredients.Count;
+                    int stepCount = Steps.Count;
+
+                    string nutritionInfo = result.Calories > 0
+                        ? $"\nCalories: {result.Calories:F0} kcal" +
+                          $"\nProtein: {result.Protein:F1}g" +
+                          $"\nCarbs: {result.Carbs:F1}g" +
+                          $"\nFat: {result.Fat:F1}g"
+                        : "\nNutritional info not available.";
+
+                    string recipeInfo = ingredientCount > 0
+                        ? $"\nIngredients: {ingredientCount} items" +
+                          $"\nSteps: {stepCount} steps"
+                        : "\nRecipe details not found in database.";
+
+                    await Shell.Current.DisplayAlert("Food Recognised!",
+                        $"Detected: {result.Name}" +
+                        $"\nCategory: {result.Category} > {result.SubCategory}" +
+                        nutritionInfo +
+                        recipeInfo,
+                        "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Recognition Failed",
+                        $"{result.ErrorMessage}\n\nPlease fill in the details manually.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                IsBusy = false;
+                await Shell.Current.DisplayAlert("Error",
+                    "Food scanning failed. Please try again.", "OK");
+                System.Diagnostics.Debug.WriteLine($"ScanFood error: {ex.Message}");
+            }
+        }
+
         private bool ValidateForm()
         {
             bool isValid = true;
@@ -426,22 +532,22 @@ namespace TasteHub.ViewModels
             }
 
             NutritionError = string.Empty;
-            if (!string.IsNullOrWhiteSpace(CaloriesText) && !double.TryParse(CaloriesText, out double cal))
+            if (!string.IsNullOrWhiteSpace(CaloriesText) && !double.TryParse(CaloriesText, out _))
             {
                 NutritionError = "Calories must be a valid number.";
                 isValid = false;
             }
-            else if (!string.IsNullOrWhiteSpace(ProteinText) && !double.TryParse(ProteinText, out double pro))
+            else if (!string.IsNullOrWhiteSpace(ProteinText) && !double.TryParse(ProteinText, out _))
             {
                 NutritionError = "Protein must be a valid number.";
                 isValid = false;
             }
-            else if (!string.IsNullOrWhiteSpace(CarbsText) && !double.TryParse(CarbsText, out double carb))
+            else if (!string.IsNullOrWhiteSpace(CarbsText) && !double.TryParse(CarbsText, out _))
             {
                 NutritionError = "Carbs must be a valid number.";
                 isValid = false;
             }
-            else if (!string.IsNullOrWhiteSpace(FatText) && !double.TryParse(FatText, out double fat))
+            else if (!string.IsNullOrWhiteSpace(FatText) && !double.TryParse(FatText, out _))
             {
                 NutritionError = "Fat must be a valid number.";
                 isValid = false;
@@ -470,9 +576,6 @@ namespace TasteHub.ViewModels
             return isValid;
         }
 
-        /// <summary>
-        /// Save the recipe to the database after validation
-        /// </summary>
         [RelayCommand]
         public async Task SaveRecipeAsync()
         {
@@ -508,7 +611,7 @@ namespace TasteHub.ViewModels
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error",
-                    "Failed to save recipe. Please try again.", "OK");
+                    "Failed to save recipe.", "OK");
                 System.Diagnostics.Debug.WriteLine($"SaveRecipe error: {ex.Message}");
             }
             finally

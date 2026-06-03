@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    AppShell: Defines the app's navigation structure using Shell TabBar.
+    Uses AppThemeBinding for seamless dark/light mode tab bar switching.
+    Custom SVG icons provide consistent visual navigation cues.
+-->
 <Shell
     x:Class="TasteHub.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:TasteHub.Views"
     Title="TasteHub"
+    
     Shell.FlyoutBehavior="Disabled"
     Shell.BackgroundColor="#7BA38E"
     Shell.ForegroundColor="White"
     Shell.TitleColor="White"
+    
     Shell.TabBarBackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
     Shell.TabBarForegroundColor="#7BA38E"
     Shell.TabBarUnselectedColor="#B0B0B0"
     Shell.TabBarTitleColor="#7BA38E">
 
+    <!-- Main tab navigation: Home (browse), Add (create), Settings (preferences) -->
     <TabBar>
+        <!-- Home tab: recipe list with search, filters, sensors -->
         <Tab Title="Home" Icon="home_icon.svg">
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="HomePage"/>
         </Tab>
+
+        <!-- Add tab: create a new recipe with camera and AI scan -->
         <Tab Title="Add" Icon="add_icon.svg">
             <ShellContent ContentTemplate="{DataTemplate views:AddEditPage}" Route="AddEditPage"/>
         </Tab>
+
+        <!-- Settings tab: theme, font size, accessibility, help -->
         <Tab Title="Settings" Icon="settings_icon.svg">
             <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="SettingsPage"/>
         </Tab>

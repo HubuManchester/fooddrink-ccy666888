@@ -43,7 +43,7 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 1. **Accelerometer** - Tilt phone to simulate pouring ingredients with real-time angle-to-progress mapping (InteractivePage)
 2. **Shake Detection** - Shake to mix ingredients in cooking mode; shake on HomePage to earn discount coupons (dual-scene usage)
 3. **Gyroscope** - Rotate phone to simulate stirring with rotation speed driving animation (InteractivePage)
-4. **Barometer** - Reads real atmospheric pressure to recommend recipes: low pressure → hot food/drinks, high pressure → cold food/drinks (HomePage)
+4. **Barometer** - Reads real atmospheric pressure to recommend recipes: low pressure = hot food/drinks, high pressure = cold food/drinks (HomePage)
 5. **Text-to-Speech** - Step-by-step voice reading of cooking instructions with stop support via Android native TextToSpeech engine (DetailPage)
 6. **Camera** - Capture recipe cover photos via native Android camera intent, pick from device gallery, or scan food with AI recognition using LogMeal deep learning API (AddEditPage)
 7. **Compass** - Surprise Me feature: compass-driven spinning wheel uses real magnetic heading to randomly select a recipe with 3-second animation (HomePage)
@@ -71,7 +71,7 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 - Visual completion celebration with emoji when all steps are done
 - Reset button to start the process again
 - Adapts labels based on Food vs Drink recipe type
-- Deep colour mode support matching app theme
+- Dark/light mode support matching app theme
 
 ### Validation and Error Handling
 - Recipe name: required field, maximum 100 characters
@@ -107,9 +107,9 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 - Consistent soft colour scheme: Primary #7BA38E (sage green), Food #E8A87C (peach), Drink #95B8D1 (sky blue), Accent #DEB887 (burlywood)
 - Rounded corner cards (14px) with shadow elevation for depth
 - Rounded input fields with themed borders
-- Custom Android handlers: green underlines removed, themed Switch toggle, themed SearchBar
+- Custom Android handlers: green underlines, themed Switch toggle, themed SearchBar
 - Tab bar with custom SVG icons (Home, Add, Settings)
-- All purple default colours eliminated and replaced with coordinated theme colours
+- All default purple colours replaced with coordinated theme colours
 - Warm white background (#FDFCFA light / #1A1A1A dark) for comfortable reading
 - AppThemeBinding on every visual element for seamless dark/light mode transition
 
@@ -119,7 +119,7 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 
 | Page | Description |
 | --- | --- |
-| **HomePage** | Recipe list with search bar, help button (?), category pill filters (All/Food/Drink), compass surprise wheel, barometer-based recommendation card, shake-to-earn coupon, pull-to-refresh, swipe edit/delete |
+| **HomePage** | Recipe list with search bar, help button (?), category pill filters (All/Food/Drink), compass surprise wheel, barometer-based recommendation card, shake-to-earn coupon, pull-to-refresh, swipe edit/delete, Add Recipe button |
 | **DetailPage** | Full recipe details with cover image, double-tap zoom, zoom buttons (−/+/↺), nutrition grid, ingredient list, cooking steps, TTS Read Aloud/Stop, Edit/Delete/Cook action buttons |
 | **AddEditPage** | Form with rounded input fields for recipe name, category, sub-category, description, cover image (Take Photo/Gallery/Scan Food with AI), nutrition info with boundary validation, ingredients and steps lists with add/remove, Save button with form clear |
 | **InteractivePage** | 3-step interactive cooking: tilt to pour (accelerometer + progress bar), rotate to stir (gyroscope + spoon animation), shake to mix (shake counter), completion celebration, reset |
@@ -137,14 +137,30 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 
 ---
 
+## Code Quality
+
+Analysed with **NDepend v2026.1.6**:
+
+| Metric | Value |
+| --- | --- |
+| Technical Debt Rating | **A** |
+| Technical Debt | 2.81% |
+| Average Method Complexity | 2.15 |
+| Comment Coverage | 29.73% (758 lines) |
+| Lines of Code | 1,792 |
+| Blocker Issues | 0 |
+| Critical Issues | 0 |
+
+---
+
 ## Development Plan
 
 | Phase | Description | Status |
 | --- | --- | --- |
-| Phase 1 | Main page structure, Shell navigation, data models, SQLite CRUD, sample data | ✅ Complete |
-| Phase 2 | 7 hardware features, AI food recognition, network images, error handling | ✅ Complete |
-| Phase 3 | Soft colour theme, font settings, dark/light mode, WCAG accessibility, UI polish | ✅ Complete |
-| Phase 4 | Bug fixes, validation improvements, camera fix, form clear, final README | ✅ Complete |
+| Phase 1 | Main page structure, Shell navigation, data models, SQLite CRUD, sample data | Complete |
+| Phase 2 | 7 hardware features, AI food recognition, network images, error handling | Complete |
+| Phase 3 | Soft colour theme, font settings, dark/light mode, WCAG accessibility, UI polish | Complete |
+| Phase 4 | Bug fixes, validation improvements, camera fix, form clear, comments, final README | Complete |
 
 ---
 
@@ -156,7 +172,7 @@ All data is fetched dynamically from online APIs with no hardcoded templates. Th
 - **XAML** - All UI definitions using extensible markup with AppThemeBinding for dark/light modes
 - **LogMeal API** - Cloud-based CNN deep learning for food image recognition
 - **TheMealDB API** - Free online recipe database
-- **Android Native APIs** - Camera Intent, TextToSpeech, AudioRecord for hardware features
+- **Android Native APIs** - Camera Intent, TextToSpeech for hardware features
 
 ---
 
@@ -193,14 +209,15 @@ TasteHub/
 ├── Services/
 │   ├── IDatabaseService.cs        # Database interface
 │   ├── DatabaseService.cs         # SQLite implementation with 8 sample recipes
-│   ├── CameraService.cs           # Camera activity result handler with SetPhotoPath
+│   ├── CameraService.cs           # Camera activity result handler
 │   └── FoodRecognitionService.cs  # LogMeal AI + TheMealDB dual-API pipeline
 ├── Converters/
 │   └── Converters.cs              # 7 value converters (IsNotNull, IsNotEmpty, BoolToTTSText, etc.)
 ├── Platforms/
 │   └── Android/
 │       ├── MainActivity.cs        # Camera intent result handling (requestCode 1002)
-│       └── AndroidManifest.xml    # Permissions (Internet, Camera, Storage, Microphone)
+│       ├── MainApplication.cs     # Android application entry point
+│       └── AndroidManifest.xml    # Permissions (Internet, Camera, Storage)
 ├── Resources/
 │   ├── Styles/Styles.xaml         # Global styles
 │   ├── Fonts/                     # OpenSans Regular and Semibold
@@ -210,6 +227,8 @@ TasteHub/
 ├── MauiProgram.cs                 # DI configuration + Android custom handlers
 └── README.md                      # This file
 ```
+
+---
 
 ## Prerequisites
 - Visual Studio 2022 Professional (v17.14.27)
@@ -235,9 +254,6 @@ TasteHub/
 5. Select an Android device or emulator as the deployment target
 6. Press F5 to build and deploy
 7. On first launch, 8 sample recipes with network images will be loaded automatically
-8. To test AI food recognition: tap Add → take or select a food photo → tap "Scan Food with AI"
-9. To test interactive cooking: tap any recipe → tap "Cook!" → follow the 3 sensor steps
-10. To test accessibility: go to Settings → adjust font size and dark/light mode
 
 ---
 
@@ -250,8 +266,8 @@ TasteHub/
 ## Version History
 - **v0.1** - Phase 1: Main page structure, Shell navigation, data models, SQLite CRUD, sample data seeding
 - **v0.2** - Phase 2: 7 hardware features (accelerometer, shake, gyroscope, barometer, TTS, camera, compass), network images, comprehensive error handling
-- **v0.3** - Phase 2+: AI food recognition with LogMeal deep learning API (CNN, 1300+ dishes) and TheMealDB recipe auto-fill, double-tap zoom gesture, zoom buttons, boundary validation
-- **v1.0** - Phase 3+4: Soft colour theme (#7BA38E/#E8A87C/#95B8D1), dark/light mode with AppThemeBinding, WCAG 2.1 AA compliance (9 principles), 4-level font size, rounded inputs, custom Android handlers, SVG tab icons, help button, bug fixes (shake detection, duplicate list, form clear, camera intent), final polish
+- **v0.3** - Phase 2+: AI food recognition with LogMeal deep learning API and TheMealDB recipe auto-fill, double-tap zoom gesture, zoom buttons, boundary validation
+- **v1.0** - Phase 3+4: Soft colour theme, dark/light mode, WCAG 2.1 AA compliance (9 principles), 4-level font size, rounded inputs, custom Android handlers, SVG tab icons, help button, full XML comments (NDepend Debt Rating A), final polish
 
 ---
 

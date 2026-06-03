@@ -9,70 +9,115 @@ using TasteHub.Services;
 
 namespace TasteHub.ViewModels
 {
+    /// <summary>
+    /// View model for the Add/Edit Recipe page.
+    /// Handles form state, input validation, camera photo capture,
+    /// AI food recognition (LogMeal + TheMealDB) and SQLite persistence.
+    /// The same view model is reused for both adding new recipes and editing
+    /// existing ones, controlled by the IsEditMode flag — code reusability evidence.
+    /// </summary>
     [QueryProperty(nameof(RecipeId), "id")]
     public partial class AddEditViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
 
+        // ==================== Navigation ====================
+
+        /// <summary>Recipe ID received via Shell navigation query parameter; 0 means Add mode</summary>
         [ObservableProperty]
         private int _recipeId;
 
+        /// <summary>Whether the form is in Edit mode (true) or Add mode (false)</summary>
         [ObservableProperty]
         private bool _isEditMode;
 
+        // ==================== Form Fields ====================
+
+        /// <summary>Recipe name entered by the user (required, max 100 characters)</summary>
         [ObservableProperty]
         private string _recipeName = string.Empty;
 
+        /// <summary>Selected main category: Food or Drink</summary>
         [ObservableProperty]
         private string _selectedCategory = "Food";
 
+        /// <summary>Selected sub-category (e.g. Breakfast, Lunch, Hot Drink)</summary>
         [ObservableProperty]
         private string _selectedSubCategory = string.Empty;
 
+        /// <summary>Optional recipe description text</summary>
         [ObservableProperty]
         private string _description = string.Empty;
 
+        /// <summary>Local file path or URL for the cover image</summary>
         [ObservableProperty]
         private string _imagePath = string.Empty;
 
+        /// <summary>Calories input as string for Entry binding (validated on save)</summary>
         [ObservableProperty]
         private string _caloriesText = string.Empty;
 
+        /// <summary>Protein input as string for Entry binding (validated on save)</summary>
         [ObservableProperty]
         private string _proteinText = string.Empty;
 
+        /// <summary>Carbohydrates input as string for Entry binding (validated on save)</summary>
         [ObservableProperty]
         private string _carbsText = string.Empty;
 
+        /// <summary>Fat input as string for Entry binding (validated on save)</summary>
         [ObservableProperty]
         private string _fatText = string.Empty;
 
+        // ==================== Validation Error Messages ====================
+
+        /// <summary>Validation error message for the recipe name field</summary>
         [ObservableProperty]
         private string _nameError = string.Empty;
 
+        /// <summary>Validation error message for the category field</summary>
         [ObservableProperty]
         private string _categoryError = string.Empty;
 
+        /// <summary>Validation error message for the nutrition fields</summary>
         [ObservableProperty]
         private string _nutritionError = string.Empty;
 
+        /// <summary>Validation error message for the ingredients list</summary>
         [ObservableProperty]
         private string _ingredientsError = string.Empty;
 
+        /// <summary>Validation error message for the steps list</summary>
         [ObservableProperty]
         private string _stepsError = string.Empty;
 
+        // ==================== Collections ====================
+
+        /// <summary>List of ingredient strings bound to the ingredients CollectionView</summary>
         public ObservableCollection<string> Ingredients { get; } = new();
+
+        /// <summary>List of cooking step strings bound to the steps CollectionView</summary>
         public ObservableCollection<string> Steps { get; } = new();
+
+        /// <summary>Available main categories: Food and Drink</summary>
         public ObservableCollection<string> Categories { get; } = new() { "Food", "Drink" };
+
+        /// <summary>Sub-categories populated dynamically based on selected category</summary>
         public ObservableCollection<string> SubCategories { get; } = new();
 
+        /// <summary>Current text in the ingredient input field</summary>
         [ObservableProperty]
         private string _newIngredient = string.Empty;
 
+        /// <summary>Current text in the step input field</summary>
         [ObservableProperty]
         private string _newStep = string.Empty;
 
+        /// <summary>
+        /// Constructor with dependency injection of database service.
+        /// Initialises sub-categories for the default Food category.
+        /// </summary>
+        /// <param name="databaseService">Injected database service for CRUD operations</param>
         public AddEditViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
@@ -80,6 +125,9 @@ namespace TasteHub.ViewModels
             UpdateSubCategories();
         }
 
+        /// <summary>
+        /// Switch to Edit mode and load existing recipe data when RecipeId is set via navigation
+        /// </summary>
         partial void OnRecipeIdChanged(int value)
         {
             if (value != 0)
@@ -90,11 +138,19 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Repopulate sub-categories whenever the main category changes
+        /// </summary>
         partial void OnSelectedCategoryChanged(string value)
         {
             UpdateSubCategories();
         }
 
+        /// <summary>
+        /// Populate SubCategories based on the selected main category.
+        /// Food: Breakfast, Lunch, Dinner, Dessert, Snack.
+        /// Drink: Hot Drink, Cold Drink, Smoothie, Juice.
+        /// </summary>
         private void UpdateSubCategories()
         {
             SubCategories.Clear();
@@ -119,6 +175,10 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load an existing recipe from the database into the form fields for editing.
+        /// Deserialises the JSON-stored ingredients and steps arrays.
+        /// </summary>
         private async Task LoadRecipeAsync()
         {
             try
@@ -131,6 +191,8 @@ namespace TasteHub.ViewModels
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
+
+                // Populate all form fields from the loaded recipe
                 RecipeName = recipe.Name;
                 SelectedCategory = recipe.Category;
                 SelectedSubCategory = recipe.SubCategory;
@@ -141,6 +203,7 @@ namespace TasteHub.ViewModels
                 CarbsText = recipe.Carbs.ToString();
                 FatText = recipe.Fat.ToString();
 
+                // Deserialise ingredients from JSON string
                 Ingredients.Clear();
                 try
                 {
@@ -151,6 +214,7 @@ namespace TasteHub.ViewModels
                 }
                 catch (JsonException) { }
 
+                // Deserialise steps from JSON string
                 Steps.Clear();
                 try
                 {
@@ -172,6 +236,12 @@ namespace TasteHub.ViewModels
             }
         }
 
+        // ==================== Ingredients Commands ====================
+
+        /// <summary>
+        /// Add the current NewIngredient text to the ingredients list.
+        /// Validates that the input is not empty before adding.
+        /// </summary>
         [RelayCommand]
         public void AddIngredient()
         {
@@ -185,9 +255,17 @@ namespace TasteHub.ViewModels
             IngredientsError = string.Empty;
         }
 
+        /// <summary>Remove a specific ingredient from the list</summary>
+        /// <param name="ingredient">Ingredient string to remove</param>
         [RelayCommand]
         public void RemoveIngredient(string ingredient) => Ingredients.Remove(ingredient);
 
+        // ==================== Steps Commands ====================
+
+        /// <summary>
+        /// Add the current NewStep text to the steps list.
+        /// Validates that the input is not empty before adding.
+        /// </summary>
         [RelayCommand]
         public void AddStep()
         {
@@ -201,9 +279,18 @@ namespace TasteHub.ViewModels
             StepsError = string.Empty;
         }
 
+        /// <summary>Remove a specific step from the list</summary>
+        /// <param name="step">Step string to remove</param>
         [RelayCommand]
         public void RemoveStep(string step) => Steps.Remove(step);
 
+        // ==================== Camera Commands ====================
+
+        /// <summary>
+        /// Capture a photo using the native Android camera intent.
+        /// Requests camera permission at runtime before launching the camera.
+        /// Uses CameraService for HarmonyOS-compatible intent handling.
+        /// </summary>
         [RelayCommand]
         public async Task TakePhotoAsync()
         {
@@ -224,32 +311,32 @@ namespace TasteHub.ViewModels
 #if ANDROID
                 try
                 {
-                    var activity = Platform.CurrentActivity;
-                    if (activity != null)
+                    var photoTask = CameraService.WaitForPhotoAsync();
+                    var intent = new Android.Content.Intent(Android.Provider.MediaStore.ActionImageCapture);
+                    Platform.CurrentActivity.StartActivityForResult(intent, 1002);
+                    string photoPath = await photoTask;
+                    if (!string.IsNullOrEmpty(photoPath))
                     {
-                        string fileName = $"TasteHub_{DateTime.Now:yyyyMMdd_HHmmss}.jpg";
-                        string filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
-                        Services.CameraService.SetPhotoPath(filePath);
-
-                        var intent = new Android.Content.Intent(Android.Provider.MediaStore.ActionImageCapture);
-                        activity.StartActivityForResult(intent, 1002);
-
-                        string resultPath = await Services.CameraService.WaitForPhotoAsync();
-                        if (!string.IsNullOrEmpty(resultPath) && File.Exists(resultPath))
-                        {
-                            ImagePath = resultPath;
-                            return;
-                        }
+                        ImagePath = photoPath;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception camEx)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Native camera error: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Camera intent error: {camEx.Message}");
+                    await Shell.Current.DisplayAlert("Camera Error",
+                        "Please use Pick from Gallery instead.", "OK");
+                }
+#else
+                var photo = await MediaPicker.Default.CapturePhotoAsync();
+                if (photo != null)
+                {
+                    string localPath = Path.Combine(FileSystem.AppDataDirectory, photo.FileName);
+                    using var stream = await photo.OpenReadAsync();
+                    using var newStream = File.OpenWrite(localPath);
+                    await stream.CopyToAsync(newStream);
+                    ImagePath = localPath;
                 }
 #endif
-
-                await Shell.Current.DisplayAlert("No Photo",
-                    "No photo was taken. Please try again or use 'Gallery' to pick an existing photo.", "OK");
             }
             catch (Exception ex)
             {
@@ -258,15 +345,15 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Pick an existing photo from the device gallery.
+        /// Copies the selected photo to the app's local data directory.
+        /// </summary>
         [RelayCommand]
         public async Task PickPhotoAsync()
         {
             try
             {
-                var storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-                if (storageStatus != PermissionStatus.Granted)
-                    storageStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
-
                 var photo = await MediaPicker.Default.PickPhotoAsync();
                 if (photo != null)
                 {
@@ -284,6 +371,14 @@ namespace TasteHub.ViewModels
             }
         }
 
+        // ==================== AI Food Recognition ====================
+
+        /// <summary>
+        /// Scan the current cover image using the LogMeal deep learning API
+        /// to identify the food and auto-fill all recipe form fields.
+        /// Pipeline: Image -> LogMeal CNN (dish name + nutrition) -> TheMealDB (description, ingredients, steps).
+        /// Requires a cover image to be selected first.
+        /// </summary>
         [RelayCommand]
         public async Task ScanFoodAsync()
         {
@@ -298,11 +393,13 @@ namespace TasteHub.ViewModels
 
                 IsBusy = true;
 
+                // Call the dual-API food recognition service
                 var service = new FoodRecognitionService();
                 var result = await service.RecogniseFoodAsync(ImagePath);
 
                 if (result != null)
                 {
+                    // Auto-fill all form fields with AI-recognised data
                     if (!string.IsNullOrEmpty(result.Name)) RecipeName = result.Name;
                     if (!string.IsNullOrEmpty(result.Description)) Description = result.Description;
                     if (!string.IsNullOrEmpty(result.Category)) SelectedCategory = result.Category;
@@ -347,10 +444,20 @@ namespace TasteHub.ViewModels
             }
         }
 
+        // ==================== Validation ====================
+
+        /// <summary>
+        /// Validate all form fields before saving.
+        /// Checks: name (required, max 100 chars), category (required),
+        /// nutrition (numeric, within bounds), ingredients (min 1), steps (min 1).
+        /// Sets error message properties for display in the UI (WCAG 3.3.1).
+        /// </summary>
+        /// <returns>True if all fields are valid; false otherwise</returns>
         private bool ValidateForm()
         {
             bool isValid = true;
 
+            // Validate recipe name
             if (string.IsNullOrWhiteSpace(RecipeName))
             {
                 NameError = "Recipe name is required.";
@@ -366,6 +473,7 @@ namespace TasteHub.ViewModels
                 NameError = string.Empty;
             }
 
+            // Validate category selection
             if (string.IsNullOrWhiteSpace(SelectedCategory))
             {
                 CategoryError = "Please select a category.";
@@ -376,6 +484,7 @@ namespace TasteHub.ViewModels
                 CategoryError = string.Empty;
             }
 
+            // Validate nutrition fields: must be numeric and within realistic bounds
             NutritionError = string.Empty;
             if (!string.IsNullOrWhiteSpace(CaloriesText))
             {
@@ -410,6 +519,7 @@ namespace TasteHub.ViewModels
                 }
             }
 
+            // Validate at least one ingredient
             if (Ingredients.Count == 0)
             {
                 IngredientsError = "Please add at least one ingredient.";
@@ -420,6 +530,7 @@ namespace TasteHub.ViewModels
                 IngredientsError = string.Empty;
             }
 
+            // Validate at least one cooking step
             if (Steps.Count == 0)
             {
                 StepsError = "Please add at least one step.";
@@ -433,6 +544,14 @@ namespace TasteHub.ViewModels
             return isValid;
         }
 
+        // ==================== Save Command ====================
+
+        /// <summary>
+        /// Validate and save the recipe to the SQLite database.
+        /// Serialises ingredients and steps to JSON for storage.
+        /// Clears the form after a successful save to prepare for the next entry.
+        /// Works for both Add (Id=0) and Edit (Id>0) modes via DatabaseService.SaveRecipeAsync.
+        /// </summary>
         [RelayCommand]
         public async Task SaveRecipeAsync()
         {
@@ -463,7 +582,7 @@ namespace TasteHub.ViewModels
                 await Shell.Current.DisplayAlert("Success",
                     IsEditMode ? "Recipe updated successfully!" : "Recipe added successfully!", "OK");
 
-                // Clear form after save
+                // Clear form after save to prepare for the next entry
                 RecipeName = string.Empty;
                 Description = string.Empty;
                 SelectedCategory = "Food";

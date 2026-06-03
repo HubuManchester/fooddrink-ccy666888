@@ -9,50 +9,79 @@ using TasteHub.Services;
 
 namespace TasteHub.ViewModels
 {
+    /// <summary>
+    /// View model for the Home page, managing the recipe list, search,
+    /// category filtering, barometer-based recommendation, shake-to-earn coupon
+    /// and compass-driven Surprise Me feature.
+    /// Demonstrates code reusability via shared BaseViewModel and IDatabaseService interface.
+    /// </summary>
     public partial class HomeViewModel : BaseViewModel
     {
         private readonly IDatabaseService _databaseService;
+
+        /// <summary>Guards against concurrent recipe list loads causing duplicates</summary>
         private bool _isLoading = false;
+
+        /// <summary>Ensures barometer recommendation is set only once per page visit</summary>
         private bool _barometerInitialized = false;
 
+        /// <summary>Observable collection of recipes shown in the list</summary>
         public ObservableCollection<Recipe> Recipes { get; } = new();
 
+        /// <summary>Currently active category filter: All, Food, or Drink</summary>
         [ObservableProperty]
         private string _selectedCategory = "All";
 
+        /// <summary>Real-time search text used to filter recipes by name or description</summary>
         [ObservableProperty]
         private string _searchText = string.Empty;
 
+        /// <summary>Barometer-recommended recipe shown in the recommendation card</summary>
         [ObservableProperty]
         private Recipe _recommendedRecipe;
 
+        /// <summary>Whether the coupon popup should be visible</summary>
         [ObservableProperty]
         private bool _showCouponPopup;
 
+        /// <summary>The most recently generated coupon from a shake event</summary>
         [ObservableProperty]
         private Coupon _latestCoupon;
 
+        /// <summary>Current atmospheric pressure in hPa from the barometer sensor</summary>
         [ObservableProperty]
         private double _currentPressure;
 
+        /// <summary>Magnetic heading in degrees from the compass sensor, drives the wheel rotation</summary>
         [ObservableProperty]
         private double _compassHeading;
 
+        /// <summary>Whether the Surprise Me compass wheel is currently spinning</summary>
         [ObservableProperty]
         private bool _isSpinning;
 
+        /// <summary>Recipe selected by the compass Surprise Me feature</summary>
         [ObservableProperty]
         private Recipe _surpriseRecipe;
 
+        /// <summary>Whether the Surprise Me result card is visible</summary>
         [ObservableProperty]
         private bool _showSurpriseResult;
 
+        /// <summary>
+        /// Constructor with dependency injection of database service
+        /// </summary>
+        /// <param name="databaseService">Injected database service for recipe and coupon operations</param>
         public HomeViewModel(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
             Title = "TasteHub";
         }
 
+        /// <summary>
+        /// Load recipes from the database and apply the current category and search filters.
+        /// Uses _isLoading guard to prevent duplicate concurrent loads.
+        /// </summary>
         [RelayCommand]
         public async Task LoadRecipesAsync()
         {
@@ -66,11 +95,13 @@ namespace TasteHub.ViewModels
 
                 var recipes = await _databaseService.GetAllRecipesAsync();
 
+                // Apply category filter
                 if (SelectedCategory != "All")
                 {
                     recipes = recipes.Where(r => r.Category == SelectedCategory).ToList();
                 }
 
+                // Apply search filter
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
                     string query = SearchText.ToLower();
@@ -97,11 +128,18 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Automatically reload the recipe list whenever the search text changes
+        /// </summary>
         partial void OnSearchTextChanged(string value)
         {
             LoadRecipesAsync().ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Navigate to the recipe detail page
+        /// </summary>
+        /// <param name="recipe">Recipe to display in detail</param>
         [RelayCommand]
         public async Task GoToDetailAsync(Recipe recipe)
         {
@@ -118,6 +156,12 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Navigate directly to the edit page for a recipe via swipe action.
+        /// Uses EditRecipePage route (same AddEditPage, registered separately) to
+        /// avoid tab navigation conflicts — demonstrates code reusability.
+        /// </summary>
+        /// <param name="recipe">Recipe to edit</param>
         [RelayCommand]
         public async Task GoToEditAsync(Recipe recipe)
         {
@@ -132,6 +176,9 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Navigate to the Add Recipe page via the tab bar Add button
+        /// </summary>
         [RelayCommand]
         public async Task GoToAddRecipeAsync()
         {
@@ -147,6 +194,11 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Delete a recipe after confirming with the user.
+        /// Shows a confirmation dialog to prevent accidental deletion.
+        /// </summary>
+        /// <param name="recipe">Recipe to delete</param>
         [RelayCommand]
         public async Task DeleteRecipeAsync(Recipe recipe)
         {
@@ -169,6 +221,10 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Generate a random discount coupon when the user shakes the device.
+        /// Saves the coupon to the SQLite database and shows it via DisplayAlert.
+        /// </summary>
         [RelayCommand]
         public async Task ShakeDetectedAsync()
         {
@@ -197,6 +253,13 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Use the barometer pressure reading to recommend a recipe.
+        /// Low pressure (below 1013 hPa) suggests warm food/drinks (comfort food).
+        /// High pressure suggests cold food/drinks (refreshing options).
+        /// Called only once per page visit via _barometerInitialized guard.
+        /// </summary>
+        /// <param name="pressure">Atmospheric pressure in hPa from the barometer sensor</param>
         [RelayCommand]
         public async Task UpdateBarometerRecommendationAsync(double pressure)
         {
@@ -207,6 +270,8 @@ namespace TasteHub.ViewModels
                 _barometerInitialized = true;
                 var allRecipes = await _databaseService.GetAllRecipesAsync();
                 if (allRecipes.Count == 0) return;
+
+                // Low pressure -> warm/comforting food; high pressure -> cold/refreshing
                 var filtered = pressure < 1013
                     ? allRecipes.Where(r =>
                         r.SubCategory == "Dinner" ||
@@ -215,6 +280,7 @@ namespace TasteHub.ViewModels
                         r.SubCategory == "Cold Drink" ||
                         r.SubCategory == "Lunch" ||
                         r.SubCategory == "Dessert").ToList();
+
                 if (filtered.Count > 0)
                 {
                     var random = new Random();
@@ -232,6 +298,11 @@ namespace TasteHub.ViewModels
             }
         }
 
+        /// <summary>
+        /// Trigger the compass Surprise Me wheel.
+        /// Spins for 3 seconds using live compass heading data to drive the animation,
+        /// then selects a recipe based on the final heading position.
+        /// </summary>
         [RelayCommand]
         public async Task SurpriseMeAsync()
         {
@@ -246,6 +317,8 @@ namespace TasteHub.ViewModels
                 IsSpinning = true;
                 await Task.Delay(3000);
                 IsSpinning = false;
+
+                // Use compass heading modulo count to pick recipe
                 int index = (int)(CompassHeading % allRecipes.Count);
                 SurpriseRecipe = allRecipes[index];
                 ShowSurpriseResult = true;

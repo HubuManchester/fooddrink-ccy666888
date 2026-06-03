@@ -378,6 +378,7 @@ namespace TasteHub.ViewModels
         /// to identify the food and auto-fill all recipe form fields.
         /// Pipeline: Image -> LogMeal CNN (dish name + nutrition) -> TheMealDB (description, ingredients, steps).
         /// Requires a cover image to be selected first.
+        /// Shows a specific error message for network failures vs unrecognised food.
         /// </summary>
         [RelayCommand]
         public async Task ScanFoodAsync()
@@ -397,7 +398,7 @@ namespace TasteHub.ViewModels
                 var service = new FoodRecognitionService();
                 var result = await service.RecogniseFoodAsync(ImagePath);
 
-                if (result != null)
+                if (result != null && result.Success)
                 {
                     // Auto-fill all form fields with AI-recognised data
                     if (!string.IsNullOrEmpty(result.Name)) RecipeName = result.Name;
@@ -426,8 +427,15 @@ namespace TasteHub.ViewModels
                     await Shell.Current.DisplayAlert("AI Recognition",
                         $"Recognised: {result.Name}\nFields have been auto-filled!", "OK");
                 }
+                else if (result != null && !string.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    // Show specific error message (e.g. network error, timeout)
+                    await Shell.Current.DisplayAlert("Recognition Failed",
+                        $"{result.ErrorMessage}\nPlease fill in the details manually.", "OK");
+                }
                 else
                 {
+                    // Food was not recognised by the AI model
                     await Shell.Current.DisplayAlert("AI Recognition",
                         "Could not recognise the food. Please fill in manually.", "OK");
                 }

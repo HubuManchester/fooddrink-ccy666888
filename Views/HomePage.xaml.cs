@@ -2,18 +2,13 @@ using TasteHub.ViewModels;
 
 namespace TasteHub.Views
 {
-    /// <summary>
-    /// Home page displaying recipe list with search, filtering,
-    /// barometer recommendation, compass surprise wheel and shake-to-earn coupon
-    /// </summary>
     public partial class HomePage : ContentPage
     {
         private readonly HomeViewModel _viewModel;
-
-        // Shake detection variables
         private DateTime _lastShakeTime = DateTime.MinValue;
         private double _lastX, _lastY, _lastZ;
         private bool _shakeInitialized = false;
+        private bool _barometerInitialized = false;
 
         public HomePage(HomeViewModel viewModel)
         {
@@ -22,9 +17,6 @@ namespace TasteHub.Views
             _viewModel = viewModel;
         }
 
-        /// <summary>
-        /// Load recipes and start hardware sensors when page appears
-        /// </summary>
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -34,9 +26,6 @@ namespace TasteHub.Views
             StartCompass();
         }
 
-        /// <summary>
-        /// Stop hardware sensors when page disappears
-        /// </summary>
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
@@ -45,32 +34,31 @@ namespace TasteHub.Views
             StopCompass();
         }
 
-        /// <summary>Set category filter to All and reload</summary>
         private async void OnAllCategoryClicked(object sender, EventArgs e)
         {
             _viewModel.SelectedCategory = "All";
             await _viewModel.LoadRecipesAsync();
         }
 
-        /// <summary>Set category filter to Food and reload</summary>
         private async void OnFoodCategoryClicked(object sender, EventArgs e)
         {
             _viewModel.SelectedCategory = "Food";
             await _viewModel.LoadRecipesAsync();
         }
 
-        /// <summary>Set category filter to Drink and reload</summary>
         private async void OnDrinkCategoryClicked(object sender, EventArgs e)
         {
             _viewModel.SelectedCategory = "Drink";
             await _viewModel.LoadRecipesAsync();
         }
 
-        // ==================== Barometer Hardware ====================
+        private async void OnHelpClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("//SettingsPage");
+        }
 
-        /// <summary>
-        /// Start monitoring the barometer sensor for weather-based recommendations
-        /// </summary>
+        // ==================== Barometer ====================
+
         private void StartBarometer()
         {
             try
@@ -87,9 +75,6 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Stop the barometer sensor
-        /// </summary>
         private void StopBarometer()
         {
             try
@@ -106,25 +91,30 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Handle barometer reading changes and update recommendation
-        /// </summary>
         private async void OnBarometerReadingChanged(object sender, BarometerChangedEventArgs e)
         {
-            await _viewModel.UpdateBarometerRecommendationAsync(e.Reading.PressureInHectopascals);
+            if (_barometerInitialized) return;
+            _barometerInitialized = true;
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await _viewModel.UpdateBarometerRecommendationAsync(e.Reading.PressureInHectopascals);
+            });
         }
 
-        // ==================== Shake Detection (Manual via Accelerometer) ====================
+        // ==================== Shake Detection ====================
 
-        /// <summary>
-        /// Start monitoring accelerometer for manual shake detection
-        /// </summary>
         private void StartShakeDetection()
         {
             try
             {
-                if (Accelerometer.Default.IsSupported && !Accelerometer.Default.IsMonitoring)
+                if (Accelerometer.Default.IsSupported)
                 {
+                    if (Accelerometer.Default.IsMonitoring)
+                    {
+                        Accelerometer.Default.ReadingChanged -= OnAccelerometerForShake;
+                        Accelerometer.Default.Stop();
+                    }
                     Accelerometer.Default.ReadingChanged += OnAccelerometerForShake;
                     Accelerometer.Default.Start(SensorSpeed.Game);
                 }
@@ -135,9 +125,6 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Stop the accelerometer sensor
-        /// </summary>
         private void StopShakeDetection()
         {
             try
@@ -154,11 +141,6 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Detect shake by measuring acceleration force change.
-        /// Triggers coupon generation when force exceeds threshold.
-        /// Cooldown of 3 seconds between shakes to prevent duplicates.
-        /// </summary>
         private void OnAccelerometerForShake(object sender, AccelerometerChangedEventArgs e)
         {
             try
@@ -171,7 +153,7 @@ namespace TasteHub.Views
                 {
                     double force = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
 
-                    if (force > 2.5 && (DateTime.Now - _lastShakeTime).TotalSeconds > 3)
+                    if (force > 1.8 && (DateTime.Now - _lastShakeTime).TotalSeconds > 2)
                     {
                         _lastShakeTime = DateTime.Now;
                         MainThread.BeginInvokeOnMainThread(async () =>
@@ -192,12 +174,8 @@ namespace TasteHub.Views
             }
         }
 
-        // ==================== Compass Hardware ====================
+        // ==================== Compass ====================
 
-        /// <summary>
-        /// Start monitoring the compass sensor for the Surprise Me feature.
-        /// The compass heading drives the wheel rotation in real-time.
-        /// </summary>
         private void StartCompass()
         {
             try
@@ -214,9 +192,6 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Stop the compass sensor
-        /// </summary>
         private void StopCompass()
         {
             try
@@ -233,10 +208,6 @@ namespace TasteHub.Views
             }
         }
 
-        /// <summary>
-        /// Handle compass reading changes and update the heading value.
-        /// The heading is used to rotate the surprise wheel and select a recipe.
-        /// </summary>
         private void OnCompassReadingChanged(object sender, CompassChangedEventArgs e)
         {
             try

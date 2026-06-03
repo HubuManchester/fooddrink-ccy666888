@@ -5,6 +5,7 @@
              x:Class="TasteHub.Views.InteractivePage"
              x:DataType="viewmodels:InteractiveViewModel"
              Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1A1A1A}"
              SemanticProperties.Description="Interactive cooking page using device hardware sensors">
 
     <ScrollView>
@@ -15,100 +16,142 @@
                 <Label Text="{Binding RecipeName}"
                        FontSize="{DynamicResource AppFontSizeTitle}"
                        FontAttributes="Bold"
-                       HorizontalTextAlignment="Center"/>
+                       HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light=Black, Dark=#F0F0F0}"
+                       SemanticProperties.HeadingLevel="Level1"/>
                 <Frame Padding="10,6" CornerRadius="20"
-                       BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1565C0}"
+                       BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#2A3D30}"
                        HorizontalOptions="Center">
                     <Label Text="{Binding StatusMessage}"
                            FontSize="{DynamicResource AppFontSize}"
-                           HorizontalTextAlignment="Center"/>
+                           HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light=Black, Dark=#F0F0F0}"/>
                 </Frame>
             </VerticalStackLayout>
 
             <!-- Step 1: Tilt to Pour -->
             <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#E65100}">
+                   BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#2E2820}"
+                   SemanticProperties.Description="Step 1: Tilt your phone to pour ingredients">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="Step 1: " FontAttributes="Bold" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="{Binding PourLabel}" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="✓" TextColor="Green" FontSize="20" IsVisible="{Binding PourCompleted}"/>
+                        <Label Text="Step 1:" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#F0F0F0}"/>
+                        <Label Text="{Binding PourLabel}"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
+                        <Label Text="✓" TextColor="Green" FontSize="20"
+                               IsVisible="{Binding PourCompleted}"/>
                     </HorizontalStackLayout>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                         <ProgressBar Grid.Column="0"
                                      Progress="{Binding PourProgress, Converter={StaticResource PercentToDoubleConverter}}"
                                      ProgressColor="#FF9800"/>
-                        <Label Grid.Column="1" Text="{Binding PourProgress, StringFormat='{0:F0}%'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding PourProgress, StringFormat='{0:F0}%'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
                     </Grid>
-                    <Label Text="{Binding TiltAngle, StringFormat='Tilt angle: {0:F1} deg'}"
-                           FontSize="{DynamicResource AppFontSizeSmall}" Opacity="0.7"/>
+                    <Label Text="{Binding TiltAngle, StringFormat='Tilt angle: {0:F1}°'}"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           Opacity="0.7"
+                           TextColor="{AppThemeBinding Light=Black, Dark=#A8A8A8}"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Step 2: Rotate to Stir -->
             <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
-                   Opacity="{Binding PourCompleted, Converter={StaticResource BoolToOpacityConverter}}">
+                   BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1E2E24}"
+                   Opacity="{Binding PourCompleted, Converter={StaticResource BoolToOpacityConverter}}"
+                   SemanticProperties.Description="Step 2: Rotate your phone to stir">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="Step 2: " FontAttributes="Bold" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="Rotate to stir" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="✓" TextColor="Green" FontSize="20" IsVisible="{Binding StirCompleted}"/>
+                        <Label Text="Step 2:" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#F0F0F0}"/>
+                        <Label Text="Rotate to stir"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
+                        <Label Text="✓" TextColor="Green" FontSize="20"
+                               IsVisible="{Binding StirCompleted}"/>
                     </HorizontalStackLayout>
                     <Frame WidthRequest="100" HeightRequest="100"
                            CornerRadius="50" Padding="0"
-                           BackgroundColor="{AppThemeBinding Light=#C8E6C9, Dark=#2E7D32}"
+                           BackgroundColor="{AppThemeBinding Light=#C8E6C9, Dark=#2E4A3A}"
                            HorizontalOptions="Center"
                            Rotation="{Binding StirAnimationAngle}">
-                        <Label Text="🥄" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="🥄" FontSize="40"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Frame>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                         <ProgressBar Grid.Column="0"
                                      Progress="{Binding StirProgress, Converter={StaticResource PercentToDoubleConverter}}"
                                      ProgressColor="#4CAF50"/>
-                        <Label Grid.Column="1" Text="{Binding StirProgress, StringFormat='{0:F0}%'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding StirProgress, StringFormat='{0:F0}%'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
                     </Grid>
+                    <Label Text="{Binding RotationSpeed, StringFormat='Rotation speed: {0:F1} rad/s'}"
+                           FontSize="{DynamicResource AppFontSizeSmall}"
+                           Opacity="0.7"
+                           TextColor="{AppThemeBinding Light=Black, Dark=#A8A8A8}"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Step 3: Shake to Mix -->
             <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#283593}"
-                   Opacity="{Binding StirCompleted, Converter={StaticResource BoolToOpacityConverter}}">
+                   BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#252525}"
+                   Opacity="{Binding StirCompleted, Converter={StaticResource BoolToOpacityConverter}}"
+                   SemanticProperties.Description="Step 3: Shake your phone to mix">
                 <VerticalStackLayout Spacing="10">
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="Step 3: " FontAttributes="Bold" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="Shake to mix" FontSize="{DynamicResource AppFontSize}"/>
-                        <Label Text="✓" TextColor="Green" FontSize="20" IsVisible="{Binding ShakeCompleted}"/>
+                        <Label Text="Step 3:" FontAttributes="Bold"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#F0F0F0}"/>
+                        <Label Text="Shake to mix"
+                               FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
+                        <Label Text="✓" TextColor="Green" FontSize="20"
+                               IsVisible="{Binding ShakeCompleted}"/>
                     </HorizontalStackLayout>
                     <Label Text="{Binding ShakeCount, StringFormat='Shakes: {0}/10'}"
                            FontSize="{DynamicResource AppFontSizeLarge}"
-                           HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                           HorizontalTextAlignment="Center" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=#95B8D1}"/>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                         <ProgressBar Grid.Column="0"
                                      Progress="{Binding ShakeProgress, Converter={StaticResource PercentToDoubleConverter}}"
                                      ProgressColor="#3F51B5"/>
-                        <Label Grid.Column="1" Text="{Binding ShakeProgress, StringFormat='{0:F0}%'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{Binding ShakeProgress, StringFormat='{0:F0}%'}"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=Black, Dark=#E8E8E8}"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Completion -->
-            <Frame CornerRadius="12" Padding="20" BackgroundColor="#4CAF50"
+            <Frame CornerRadius="12" Padding="20"
+                   BackgroundColor="{AppThemeBinding Light=#4CAF50, Dark=#1B5E20}"
                    IsVisible="{Binding AllCompleted}">
                 <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
                     <Label Text="🎉" FontSize="50" HorizontalTextAlignment="Center"/>
-                    <Label Text="Your dish is ready!" FontSize="{DynamicResource AppFontSizeLarge}"
-                           FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="Center"/>
+                    <Label Text="Your dish is ready!"
+                           FontSize="{DynamicResource AppFontSizeLarge}"
+                           FontAttributes="Bold" TextColor="White"
+                           HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Reset -->
             <Button Text="Reset" Command="{Binding ResetCookingCommand}"
-                    BackgroundColor="#9E9E9E" TextColor="White"/>
+                    BackgroundColor="{AppThemeBinding Light=#9E9E9E, Dark=#4A4A4A}"
+                    TextColor="White" CornerRadius="12" HeightRequest="48"/>
 
         </VerticalStackLayout>
     </ScrollView>

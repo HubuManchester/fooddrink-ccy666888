@@ -5,130 +5,124 @@
              x:Class="TasteHub.Views.DetailPage"
              x:DataType="viewmodels:DetailViewModel"
              Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light=#FDFCFA, Dark=#1A1A1A}"
              SemanticProperties.Description="Recipe detail page showing full recipe information">
 
     <ScrollView>
-        <VerticalStackLayout Padding="15" Spacing="15">
+        <VerticalStackLayout Padding="15" Spacing="12">
 
-            <!-- Cover image with zoom: double-tap gesture + zoom buttons -->
-            <Frame CornerRadius="12" Padding="0" HeightRequest="300"
-                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
-                   SemanticProperties.Description="Recipe cover image, double-tap or use buttons to zoom">
-                <Grid>
-                    <Image Source="{Binding Recipe.ImagePath}"
-                           Aspect="AspectFit"
-                           x:Name="RecipeImage"
-                           HeightRequest="300">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                  Tapped="OnImageDoubleTapped"/>
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <!-- Zoom buttons overlay -->
-                    <HorizontalStackLayout
-                        VerticalOptions="End"
-                        HorizontalOptions="End"
-                        Spacing="5"
-                        Padding="10">
-                        <Button Text="➖"
-                                WidthRequest="40" HeightRequest="40"
-                                FontSize="16"
-                                Clicked="OnZoomOutClicked"
-                                BackgroundColor="#80000000"
-                                TextColor="White"
-                                CornerRadius="20"
-                                SemanticProperties.Hint="Zoom out the recipe image"/>
-                        <Button Text="➕"
-                                WidthRequest="40" HeightRequest="40"
-                                FontSize="16"
-                                Clicked="OnZoomInClicked"
-                                BackgroundColor="#80000000"
-                                TextColor="White"
-                                CornerRadius="20"
-                                SemanticProperties.Hint="Zoom in the recipe image"/>
-                        <Button Text="↺"
-                                WidthRequest="40" HeightRequest="40"
-                                FontSize="16"
-                                Clicked="OnZoomResetClicked"
-                                BackgroundColor="#80000000"
-                                TextColor="White"
-                                CornerRadius="20"
-                                SemanticProperties.Hint="Reset image zoom to original size"/>
-                    </HorizontalStackLayout>
-                </Grid>
+            <!-- Cover image -->
+            <Frame CornerRadius="14" Padding="0" HeightRequest="280" HasShadow="True"
+                   BorderColor="Transparent"
+                   BackgroundColor="{AppThemeBinding Light=#F5F3EF, Dark=#262626}">
+                <Image Source="{Binding Recipe.ImagePath}"
+                       Aspect="AspectFit" x:Name="RecipeImage" HeightRequest="280">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnImageDoubleTapped"/>
+                    </Image.GestureRecognizers>
+                </Image>
             </Frame>
+
+            <!-- Zoom buttons below image -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                <Button Text="−  Zoom Out" Clicked="OnZoomOutClicked"
+                        BackgroundColor="{AppThemeBinding Light=#EDE8E2, Dark=#3A3A3A}"
+                        TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"
+                        CornerRadius="18" HeightRequest="36" FontSize="13" Padding="12,0"/>
+                <Button Text="+  Zoom In" Clicked="OnZoomInClicked"
+                        BackgroundColor="{AppThemeBinding Light=#EDE8E2, Dark=#3A3A3A}"
+                        TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"
+                        CornerRadius="18" HeightRequest="36" FontSize="13" Padding="12,0"/>
+                <Button Text="↺  Reset" Clicked="OnZoomResetClicked"
+                        BackgroundColor="{AppThemeBinding Light=#EDE8E2, Dark=#3A3A3A}"
+                        TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"
+                        CornerRadius="18" HeightRequest="36" FontSize="13" Padding="12,0"/>
+            </HorizontalStackLayout>
 
             <!-- Name and category -->
             <VerticalStackLayout Spacing="4">
                 <Label Text="{Binding Recipe.Name}"
-                       FontSize="{DynamicResource AppFontSizeTitle}"
-                       FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSizeTitle}" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"
                        SemanticProperties.HeadingLevel="Level1"/>
                 <HorizontalStackLayout Spacing="8">
-                    <Frame Padding="6,3" CornerRadius="8"
-                           BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1565C0}">
+                    <Frame Padding="8,4" CornerRadius="10" HasShadow="False"
+                           BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#2E4A3A}">
                         <Label Text="{Binding Recipe.Category}"
-                               FontSize="{DynamicResource AppFontSizeSmall}"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#C8E6C9}"/>
                     </Frame>
-                    <Frame Padding="6,3" CornerRadius="8"
-                           BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#E65100}">
+                    <Frame Padding="8,4" CornerRadius="10" HasShadow="False"
+                           BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#4A3728}">
                         <Label Text="{Binding Recipe.SubCategory}"
-                               FontSize="{DynamicResource AppFontSizeSmall}"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#FFE0B2}"/>
                     </Frame>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
             <!-- Description -->
             <Label Text="{Binding Recipe.Description}"
-                   FontSize="{DynamicResource AppFontSize}"/>
+                   FontSize="{DynamicResource AppFontSize}"
+                   TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
 
             <!-- Nutrition -->
-            <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#F1F8E9, Dark=#33691E}">
+            <Frame CornerRadius="14" Padding="15" HasShadow="True" BorderColor="Transparent"
+                   BackgroundColor="{AppThemeBinding Light=#F0F7F2, Dark=#1E2E24}">
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Nutrition Information"
-                           FontAttributes="Bold"
+                    <Label Text="Nutrition Information" FontAttributes="Bold"
                            FontSize="{DynamicResource AppFontSize}"
+                           TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"
                            SemanticProperties.HeadingLevel="Level2"/>
                     <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
                         <Label Grid.Column="0" Text="Calories" FontAttributes="Bold"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                         <Label Grid.Column="1" Text="Protein" FontAttributes="Bold"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                         <Label Grid.Column="2" Text="Carbs" FontAttributes="Bold"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                         <Label Grid.Column="3" Text="Fat" FontAttributes="Bold"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
-                        <Label Grid.Row="1" Grid.Column="0"
+                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
+                        <Label Grid.Row="1" Grid.Column="0" HorizontalTextAlignment="Center"
                                Text="{Binding Recipe.Calories, StringFormat='{0:F0} kcal'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
-                        <Label Grid.Row="1" Grid.Column="1"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#7BA38E, Dark=#A3C9B3}"/>
+                        <Label Grid.Row="1" Grid.Column="1" HorizontalTextAlignment="Center"
                                Text="{Binding Recipe.Protein, StringFormat='{0:F1}g'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
-                        <Label Grid.Row="1" Grid.Column="2"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#7BA38E, Dark=#A3C9B3}"/>
+                        <Label Grid.Row="1" Grid.Column="2" HorizontalTextAlignment="Center"
                                Text="{Binding Recipe.Carbs, StringFormat='{0:F1}g'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
-                        <Label Grid.Row="1" Grid.Column="3"
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#7BA38E, Dark=#A3C9B3}"/>
+                        <Label Grid.Row="1" Grid.Column="3" HorizontalTextAlignment="Center"
                                Text="{Binding Recipe.Fat, StringFormat='{0:F1}g'}"
-                               FontSize="{DynamicResource AppFontSizeSmall}" HorizontalTextAlignment="Center"/>
+                               FontSize="{DynamicResource AppFontSizeSmall}"
+                               TextColor="{AppThemeBinding Light=#7BA38E, Dark=#A3C9B3}"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Ingredients -->
-            <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#5D4037}">
+            <Frame CornerRadius="14" Padding="15" HasShadow="True" BorderColor="Transparent"
+                   BackgroundColor="{AppThemeBinding Light=#FFF8F0, Dark=#2E2820}">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Ingredients"
-                           FontAttributes="Bold"
+                    <Label Text="Ingredients" FontAttributes="Bold"
                            FontSize="{DynamicResource AppFontSize}"
+                           TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"
                            SemanticProperties.HeadingLevel="Level2"/>
                     <CollectionView ItemsSource="{Binding IngredientsList}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="x:String">
                                 <HorizontalStackLayout Spacing="8" Padding="0,3">
-                                    <Label Text="•" FontSize="{DynamicResource AppFontSize}"/>
-                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"/>
+                                    <Label Text="•" FontSize="{DynamicResource AppFontSize}"
+                                           TextColor="#E8A87C"/>
+                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"
+                                           TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                                 </HorizontalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -136,27 +130,28 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Steps with TTS button -->
-            <Frame CornerRadius="12" Padding="15"
-                   BackgroundColor="{AppThemeBinding Light=#E8EAF6, Dark=#283593}">
+            <!-- Steps with TTS -->
+            <Frame CornerRadius="14" Padding="15" HasShadow="True" BorderColor="Transparent"
+                   BackgroundColor="{AppThemeBinding Light=#F5F3EF, Dark=#252525}">
                 <VerticalStackLayout Spacing="8">
                     <Grid ColumnDefinitions="*,Auto">
-                        <Label Grid.Column="0" Text="Steps"
-                               FontAttributes="Bold"
+                        <Label Grid.Column="0" Text="Steps" FontAttributes="Bold"
                                FontSize="{DynamicResource AppFontSize}"
+                               TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"
                                SemanticProperties.HeadingLevel="Level2"/>
-                        <Button Grid.Column="1"
-                                x:Name="TtsButton"
-                                Text="🔊 Read Aloud"
-                                Clicked="OnTtsButtonClicked"
-                                SemanticProperties.Hint="Read cooking steps aloud using text-to-speech"/>
+                        <Button Grid.Column="1" x:Name="TtsButton"
+                                Text="🔊 Read Aloud" Clicked="OnTtsButtonClicked"
+                                BackgroundColor="#7BA38E" TextColor="White"
+                                CornerRadius="10" FontSize="13"
+                                SemanticProperties.Hint="Read cooking steps aloud"/>
                     </Grid>
                     <CollectionView ItemsSource="{Binding StepsList}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="x:String">
-                                <Frame Padding="10" Margin="0,3" CornerRadius="8"
-                                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#3C3C3C}">
-                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"/>
+                                <Frame Padding="10" Margin="0,3" CornerRadius="10" HasShadow="False"
+                                       BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                                    <Label Text="{Binding .}" FontSize="{DynamicResource AppFontSize}"
+                                           TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                                 </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -168,16 +163,17 @@
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                 <Button Grid.Column="0" Text="Edit"
                         Command="{Binding EditRecipeCommand}"
-                        BackgroundColor="#FF9800" TextColor="White"/>
+                        BackgroundColor="#E8A87C" TextColor="White"
+                        CornerRadius="10" FontAttributes="Bold"/>
                 <Button Grid.Column="1" Text="Delete"
                         Command="{Binding DeleteRecipeCommand}"
-                        BackgroundColor="#F44336" TextColor="White"/>
+                        BackgroundColor="#D9897A" TextColor="White"
+                        CornerRadius="10" FontAttributes="Bold"/>
                 <Button Grid.Column="2" Text="Cook!"
                         Clicked="OnCookClicked"
-                        BackgroundColor="#4CAF50" TextColor="White"/>
+                        BackgroundColor="#7BA38E" TextColor="White"
+                        CornerRadius="10" FontAttributes="Bold"/>
             </Grid>
-
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

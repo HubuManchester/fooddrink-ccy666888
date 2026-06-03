@@ -6,10 +6,6 @@ using TasteHub.Views;
 
 namespace TasteHub
 {
-    /// <summary>
-    /// Main entry point for the MAUI application,
-    /// configuring services, view models and pages via dependency injection
-    /// </summary>
     public static class MauiProgram
     {
         public static MauiApp CreateMauiApp()
@@ -29,22 +25,69 @@ namespace TasteHub
             builder.Logging.AddDebug();
 #endif
 
-            // Register Services
             builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
-
-            // Register ViewModels
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<DetailViewModel>();
             builder.Services.AddTransient<AddEditViewModel>();
             builder.Services.AddTransient<InteractiveViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
-
-            // Register Pages
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<DetailPage>();
             builder.Services.AddTransient<AddEditPage>();
             builder.Services.AddTransient<InteractivePage>();
             builder.Services.AddTransient<SettingsPage>();
+
+            Microsoft.Maui.Handlers.SearchBarHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.BackgroundTintList =
+                    Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+#endif
+            });
+
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.BackgroundTintList =
+                    Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+#endif
+            });
+
+            Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.BackgroundTintList =
+                    Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+#endif
+            });
+
+            Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.BackgroundTintList =
+                    Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+#endif
+            });
+
+            Microsoft.Maui.Handlers.SwitchHandler.Mapper.AppendToMapping("GreenSwitch", (handler, view) =>
+            {
+#if ANDROID
+                var states = new int[][] {
+                    new int[] { Android.Resource.Attribute.StateChecked },
+                    new int[] { -Android.Resource.Attribute.StateChecked }
+                };
+                var thumbColors = new int[] {
+                    new Android.Graphics.Color(0x7B, 0xA3, 0x8E).ToArgb(),
+                    new Android.Graphics.Color(0xB0, 0xB0, 0xB0).ToArgb()
+                };
+                var trackColors = new int[] {
+                    new Android.Graphics.Color(0xA3, 0xC9, 0xB3).ToArgb(),
+                    new Android.Graphics.Color(0x60, 0x60, 0x60).ToArgb()
+                };
+                handler.PlatformView.ThumbTintList = new Android.Content.Res.ColorStateList(states, thumbColors);
+                handler.PlatformView.TrackTintList = new Android.Content.Res.ColorStateList(states, trackColors);
+#endif
+            });
 
             return builder.Build();
         }

@@ -214,7 +214,7 @@ namespace TasteHub.Views
 
             _isSpeaking = true;
             _viewModel.IsReading = true;
-            TtsButton.Text = "⏹ Stop";
+            TtsButton.Text = "Stop";
 
             try
             {

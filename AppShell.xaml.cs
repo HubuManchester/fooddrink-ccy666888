@@ -10,9 +10,10 @@
         {
             InitializeComponent();
 
-            // Register routes for pages that are navigated to programmatically
+            // Register routes for pages navigated to programmatically
             Routing.RegisterRoute("DetailPage", typeof(Views.DetailPage));
             Routing.RegisterRoute("AddEditPage", typeof(Views.AddEditPage));
+            Routing.RegisterRoute("EditRecipePage", typeof(Views.AddEditPage));
             Routing.RegisterRoute("InteractivePage", typeof(Views.InteractivePage));
         }
     }

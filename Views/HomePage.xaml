@@ -6,137 +6,155 @@
              x:Class="TasteHub.Views.HomePage"
              x:DataType="viewmodels:HomeViewModel"
              Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light=#FDFCFA, Dark=#1A1A1A}"
              SemanticProperties.Description="Home page displaying recipe list with search and filtering">
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" Padding="15" RowSpacing="10">
 
-        <!-- Row 0: Search bar -->
-        <SearchBar Grid.Row="0"
-                   Placeholder="Search recipes..."
-                   Text="{Binding SearchText}"
-                   SemanticProperties.Hint="Type to search recipes by name or description"/>
+        <!-- Row 0: Search bar + Help -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Frame Grid.Column="0" CornerRadius="25" Padding="0" HasShadow="False"
+                   BorderColor="{AppThemeBinding Light=#C0B8AE, Dark=#424242}"
+                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}">
+                <SearchBar Placeholder="Search recipes..."
+                           PlaceholderColor="{AppThemeBinding Light=#777777, Dark=#888888}"
+                           CancelButtonColor="#7BA38E"
+                           Text="{Binding SearchText}"
+                           TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#E8E8E8}"
+                           BackgroundColor="Transparent"
+                           SemanticProperties.Hint="Type to search recipes by name or description"/>
+            </Frame>
+            <Button Grid.Column="1" Text="?"
+                    WidthRequest="42" HeightRequest="42"
+                    FontSize="20" FontAttributes="Bold"
+                    BackgroundColor="{AppThemeBinding Light=#EDE8E2, Dark=#3A3A3A}"
+                    TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"
+                    CornerRadius="21"
+                    Clicked="OnHelpClicked"
+                    SemanticProperties.Hint="Open help and usage instructions"/>
+        </Grid>
 
-        <!-- Row 1: Category filter buttons and Surprise Me -->
+        <!-- Row 1: Category buttons + Surprise Me -->
         <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="10">
-            <HorizontalStackLayout Grid.Column="0" Spacing="10" HorizontalOptions="Center">
+            <HorizontalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
                 <Button Text="All"
+                        BackgroundColor="#7BA38E" TextColor="White"
+                        CornerRadius="20" HeightRequest="38" MinimumWidthRequest="65"
+                        FontSize="{DynamicResource AppFontSizeSmall}" FontAttributes="Bold"
                         Clicked="OnAllCategoryClicked"
                         SemanticProperties.Hint="Show all recipes"/>
                 <Button Text="Food"
+                        BackgroundColor="#E8A87C" TextColor="White"
+                        CornerRadius="20" HeightRequest="38" MinimumWidthRequest="65"
+                        FontSize="{DynamicResource AppFontSizeSmall}" FontAttributes="Bold"
                         Clicked="OnFoodCategoryClicked"
                         SemanticProperties.Hint="Show food recipes only"/>
                 <Button Text="Drink"
+                        BackgroundColor="#95B8D1" TextColor="White"
+                        CornerRadius="20" HeightRequest="38" MinimumWidthRequest="65"
+                        FontSize="{DynamicResource AppFontSizeSmall}" FontAttributes="Bold"
                         Clicked="OnDrinkCategoryClicked"
                         SemanticProperties.Hint="Show drink recipes only"/>
             </HorizontalStackLayout>
-            <Button Grid.Column="1"
-                    Text="🧭"
-                    WidthRequest="50" HeightRequest="45"
-                    FontSize="22"
+            <Button Grid.Column="1" Text="🧭"
+                    WidthRequest="48" HeightRequest="48" FontSize="22"
+                    Padding="0"
                     Command="{Binding SurpriseMeCommand}"
-                    BackgroundColor="#FF9800"
+                    BackgroundColor="Transparent"
+                    CornerRadius="24"
                     SemanticProperties.Hint="Surprise me with a random recipe using compass"/>
         </Grid>
 
-        <!-- Row 2: Barometer recommendation card -->
-        <Frame Grid.Row="2" Padding="12" CornerRadius="12"
-               BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+        <!-- Row 2: Barometer recommendation -->
+        <Frame Grid.Row="2" Padding="14" CornerRadius="16" HasShadow="True"
+               BorderColor="Transparent"
+               BackgroundColor="{AppThemeBinding Light=#F0F7F2, Dark=#2A3D30}"
                IsVisible="{Binding RecommendedRecipe, Converter={StaticResource IsNotNullConverter}}"
-               SemanticProperties.Description="Today recommended recipe based on weather">
+               SemanticProperties.Description="Today recommended recipe based on weather pressure">
             <Grid ColumnDefinitions="*,Auto">
                 <VerticalStackLayout Grid.Column="0" Spacing="4">
-                    <Label Text="Today's Recommendation"
-                           FontAttributes="Bold"
-                           FontSize="{DynamicResource AppFontSize}"/>
+                    <Label Text="🌤 Today's Pick" FontAttributes="Bold"
+                           FontSize="{DynamicResource AppFontSize}"
+                           TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"/>
                     <Label Text="{Binding RecommendedRecipe.Name}"
-                           FontSize="{DynamicResource AppFontSizeSmall}"/>
+                           FontSize="{DynamicResource AppFontSize}" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#3D3D3D, Dark=#E8E8E8}"/>
                     <Label Text="{Binding CurrentPressure, StringFormat='Pressure: {0:F0} hPa'}"
                            FontSize="{DynamicResource AppFontSizeSmall}"
-                           Opacity="0.7"/>
+                           TextColor="{AppThemeBinding Light=#8A8A8A, Dark=#A8A8A8}"/>
                 </VerticalStackLayout>
                 <Button Grid.Column="1" Text="View"
+                        BackgroundColor="#7BA38E" TextColor="White"
+                        CornerRadius="12" FontAttributes="Bold"
                         Command="{Binding GoToDetailCommand}"
                         CommandParameter="{Binding RecommendedRecipe}"
-                        VerticalOptions="Center"/>
+                        VerticalOptions="Center" WidthRequest="80"/>
             </Grid>
         </Frame>
 
-        <!-- Row 3: Compass Surprise wheel (visible when spinning) -->
-        <Frame Grid.Row="3" Padding="15" CornerRadius="12"
-               BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#E65100}"
-               IsVisible="{Binding IsSpinning}"
-               SemanticProperties.Description="Compass wheel spinning to select a random recipe">
+        <!-- Row 3: Compass wheel -->
+        <Frame Grid.Row="3" Padding="15" CornerRadius="16" HasShadow="True"
+               BackgroundColor="{AppThemeBinding Light=#F0F7F2, Dark=#2A3D30}"
+               IsVisible="{Binding IsSpinning}">
             <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Label Text="Spinning the Compass Wheel..."
-                       FontAttributes="Bold"
-                       FontSize="{DynamicResource AppFontSize}"
-                       HorizontalTextAlignment="Center"/>
-                <Frame WidthRequest="120" HeightRequest="120"
-                       CornerRadius="60" Padding="0"
-                       BackgroundColor="{AppThemeBinding Light=#FFE0B2, Dark=#BF360C}"
-                       HorizontalOptions="Center"
-                       Rotation="{Binding CompassHeading}">
-                    <Label Text="🧭" FontSize="50"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
+                <Label Text="Spinning the Compass Wheel..." FontAttributes="Bold"
+                       FontSize="{DynamicResource AppFontSize}" HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"/>
+                <Frame WidthRequest="120" HeightRequest="120" CornerRadius="60" Padding="0"
+                       BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                       HorizontalOptions="Center" Rotation="{Binding CompassHeading}">
+                    <Label Text="🧭" FontSize="50" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Frame>
                 <Label Text="{Binding CompassHeading, StringFormat='Heading: {0:F0}°'}"
                        FontSize="{DynamicResource AppFontSizeSmall}"
                        HorizontalTextAlignment="Center"
-                       Opacity="0.7"/>
+                       TextColor="{AppThemeBinding Light=#8A8A8A, Dark=#A8A8A8}"/>
             </VerticalStackLayout>
         </Frame>
 
-        <!-- Row 4: Recipe list with pull-to-refresh and swipe -->
-        <RefreshView Grid.Row="4"
-                     IsRefreshing="{Binding IsBusy}"
-                     Command="{Binding LoadRecipesCommand}">
-            <CollectionView ItemsSource="{Binding Recipes}"
-                            SelectionMode="None"
+        <!-- Row 4: Recipe list -->
+        <RefreshView Grid.Row="4" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadRecipesCommand}">
+            <CollectionView ItemsSource="{Binding Recipes}" SelectionMode="None"
                             EmptyView="No recipes found. Tap + to add one!">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Recipe">
                         <SwipeView>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem Text="Edit"
-                                               BackgroundColor="#FF9800"
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=GoToDetailCommand}"
+                                    <SwipeItem Text="Edit" BackgroundColor="#E8A87C"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=GoToEditCommand}"
                                                CommandParameter="{Binding .}"/>
-                                    <SwipeItem Text="Delete"
-                                               BackgroundColor="#F44336"
+                                    <SwipeItem Text="Delete" BackgroundColor="#D9897A"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=DeleteRecipeCommand}"
                                                CommandParameter="{Binding .}"/>
                                 </SwipeItems>
                             </SwipeView.RightItems>
-
-                            <Frame Margin="0,5" Padding="10" CornerRadius="10"
-                                   BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                            <Frame Margin="0,4" Padding="12" CornerRadius="14" HasShadow="True"
+                                   BorderColor="Transparent"
+                                   BackgroundColor="{AppThemeBinding Light=White, Dark=#262626}">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=GoToDetailCommand}"
                                         CommandParameter="{Binding .}"/>
                                 </Frame.GestureRecognizers>
-                                <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
-                                    <Frame Grid.Column="0" CornerRadius="8"
-                                           Padding="0" IsClippedToBounds="True"
-                                           WidthRequest="80" HeightRequest="80">
-                                        <Image Source="{Binding ImagePath}"
-                                               Aspect="AspectFill"
-                                               WidthRequest="80" HeightRequest="80"/>
+                                <Grid ColumnDefinitions="75,*" ColumnSpacing="14">
+                                    <Frame Grid.Column="0" CornerRadius="12" Padding="0"
+                                           IsClippedToBounds="True" WidthRequest="75" HeightRequest="75" HasShadow="False">
+                                        <Image Source="{Binding ImagePath}" Aspect="AspectFill"
+                                               WidthRequest="75" HeightRequest="75"
+                                               SemanticProperties.Description="{Binding Name}"/>
                                     </Frame>
-                                    <VerticalStackLayout Grid.Column="1"
-                                                         VerticalOptions="Center" Spacing="4">
-                                        <Label Text="{Binding Name}"
-                                               FontAttributes="Bold"
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold"
                                                FontSize="{DynamicResource AppFontSize}"
+                                               TextColor="{AppThemeBinding Light=#2D2D2D, Dark=#F0F0F0}"
                                                LineBreakMode="TailTruncation"/>
                                         <Label Text="{Binding SubCategory}"
                                                FontSize="{DynamicResource AppFontSizeSmall}"
-                                               Opacity="0.7"/>
+                                               TextColor="{AppThemeBinding Light=#8A8A8A, Dark=#A8A8A8}"/>
                                         <Label Text="{Binding Calories, StringFormat='{0:F0} kcal'}"
                                                FontSize="{DynamicResource AppFontSizeSmall}"
-                                               TextColor="#4CAF50"/>
+                                               TextColor="#7BA38E" FontAttributes="Bold"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Frame>
@@ -149,12 +167,9 @@
         <!-- Row 5: Add button -->
         <Button Grid.Row="5" Text="+ Add Recipe"
                 Command="{Binding GoToAddRecipeCommand}"
-                BackgroundColor="#4CAF50"
-                TextColor="White"
-                FontAttributes="Bold"
-                HeightRequest="50"
+                BackgroundColor="#7BA38E" TextColor="White"
+                FontAttributes="Bold" CornerRadius="12" HeightRequest="52"
+                FontSize="{DynamicResource AppFontSize}"
                 SemanticProperties.Hint="Add a new recipe"/>
-
     </Grid>
-
 </ContentPage>
